@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'sign_in.dart';
-// import 'recoverPassword.dart';
-// import 'recoverPassword.dart';
+import 'recoverPassword.dart';
 
 enum FormData {
   email,
@@ -91,9 +90,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: TextField(
                           controller: passwordController,
                           style: Theme.of(context).textTheme.bodyMedium,
+                          obscureText: true,
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: Color(0xFF3F3636),
+                            fillColor: const Color(0xFF3F3636),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30),
                               borderSide: BorderSide.none,
@@ -124,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           //Navigator.pop(context);
                           // Navigator.of(context)
                           //     .push(MaterialPageRoute(builder: (context) {
-                          //   return ();
+                          //   return (RecoverPasswordScreen);
                           // }));
                         },
                         child: Text(
@@ -181,7 +181,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return (const RecoverPasswordScreen());
+                          }));
+                        },
                         child: Text(
                           'Mot de passe oublié ?',
                           style: Theme.of(context).textTheme.bodySmall,

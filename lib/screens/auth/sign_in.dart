@@ -4,6 +4,7 @@ import 'login.dart';
 enum FormData {
   email,
   password,
+  samepassword,
 }
 
 class SignInScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class _SignInScreenState extends State<SignInScreen> {
   FormData? selected;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController samepasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +108,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         width: 261,
                         height: 52,
                         child: TextField(
-                          controller: passwordController,
+                          controller: samepasswordController,
                           style: Theme.of(context).textTheme.bodyMedium,
                           obscureText: true,
                           decoration: InputDecoration(

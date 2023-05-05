@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
-import 'verificationCode.dart';
 
 enum FormData {
-  email,
+  password,
+  samepassword,
 }
 
-class RecoverPasswordScreen extends StatefulWidget {
-  const RecoverPasswordScreen({super.key});
+class ChangePasswordScreen extends StatefulWidget {
+  const ChangePasswordScreen({super.key});
+
   @override
-  State<RecoverPasswordScreen> createState() => _RecoverPasswordScreenState();
+  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
 }
 
-class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
+class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   FormData? selected;
-  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController samepasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +66,9 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
                       width: 261,
                       height: 52,
                       child: TextField(
-                        controller: emailController,
+                        controller: passwordController,
                         style: Theme.of(context).textTheme.bodyMedium,
+                        obscureText: true,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Color(0xFF3F3636),
@@ -74,7 +76,7 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
                             borderRadius: BorderRadius.circular(30),
                             borderSide: BorderSide.none,
                           ),
-                          hintText: 'Email d\'envoi',
+                          hintText: 'mot de passe',
                           hintStyle: Theme.of(context).textTheme.bodyMedium,
                           contentPadding:
                               EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -82,44 +84,33 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
                       ),
                     ),
                     const Padding(padding: EdgeInsets.all(10)),
+                    SizedBox(
+                        width: 261,
+                        height: 52,
+                        child: TextField(
+                          controller: samepasswordController,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color(0xFF3F3636),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: 'Confirmer mdp',
+                            hintStyle: Theme.of(context).textTheme.bodyMedium,
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
+                          ),
+                        )),
+                    const Padding(padding: EdgeInsets.all(10)),
                     Container(
                       width: 261,
                       height: 63,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: const Color.fromRGBO(114, 184, 81, 1),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromRGBO(0, 0, 0, 0.25),
-                            offset: Offset(0, 4),
-                            blurRadius: 4,
-                          )
-                        ],
-                      ),
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return (const VerificationCodeScreen());
-                          }));
-                        },
-                        child: Text(
-                          'Envoyer',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Container(
-                      width: 228,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: const Color(0xFF70A2C7),
+                        color: Color.fromRGBO(114, 184, 81, 1),
                         boxShadow: const [
                           BoxShadow(
                             color: Color.fromRGBO(0, 0, 0, 0.25),
@@ -137,7 +128,39 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
                           }));
                         },
                         child: Text(
-                          'Retour à la connexion',
+                          'Changer',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Container(
+                      width: 228,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: Color(0xFF70A2C7),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color.fromRGBO(0, 0, 0, 0.25),
+                            offset: Offset(0, 4),
+                            blurRadius: 4,
+                          )
+                        ],
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return (const LoginScreen());
+                          }));
+                        },
+                        child: Text(
+                          'Retour à la connexion ?',
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),

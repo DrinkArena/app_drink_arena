@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
+import 'changePassword.dart';
 
 enum FormData {
-  email,
+  code,
 }
 
 class VerificationCodeScreen extends StatefulWidget {
@@ -13,8 +14,7 @@ class VerificationCodeScreen extends StatefulWidget {
 
 class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
   FormData? selected;
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController codeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                       width: 261,
                       height: 52,
                       child: TextField(
-                        controller: emailController,
+                        controller: codeController,
                         style: Theme.of(context).textTheme.bodyMedium,
                         decoration: InputDecoration(
                           filled: true,
@@ -73,55 +73,13 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                             borderRadius: BorderRadius.circular(30),
                             borderSide: BorderSide.none,
                           ),
-                          hintText: 'Email',
+                          hintText: 'Code',
                           hintStyle: Theme.of(context).textTheme.bodyMedium,
                           contentPadding:
                               EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                         ),
                       ),
                     ),
-                    const Padding(padding: EdgeInsets.all(10)),
-                    SizedBox(
-                        width: 261,
-                        height: 52,
-                        child: TextField(
-                          controller: passwordController,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Color(0xFF3F3636),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide.none,
-                            ),
-                            hintText: 'Mot de passe',
-                            hintStyle: Theme.of(context).textTheme.bodyMedium,
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
-                          ),
-                        )),
-                    const Padding(padding: EdgeInsets.all(10)),
-                    SizedBox(
-                        width: 261,
-                        height: 52,
-                        child: TextField(
-                          controller: passwordController,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Color(0xFF3F3636),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide.none,
-                            ),
-                            hintText: 'Confirmer mdp',
-                            hintStyle: Theme.of(context).textTheme.bodyMedium,
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
-                          ),
-                        )),
                     const Padding(padding: EdgeInsets.all(10)),
                     Container(
                       width: 261,
@@ -142,11 +100,11 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                           Navigator.pop(context);
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return (LoginScreen());
+                            return (ChangePasswordScreen());
                           }));
                         },
                         child: Text(
-                          'Créer',
+                          'Envoyer',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
@@ -179,6 +137,35 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                         },
                         child: Text(
                           'Déjà un compte ?',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                    ),
+                    const Padding(padding: EdgeInsets.all(8)),
+                    Container(
+                      width: 228,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: const Color(0xFF70A2C7),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color.fromRGBO(0, 0, 0, 0.25),
+                            offset: Offset(0, 4),
+                            blurRadius: 4,
+                          )
+                        ],
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          // Navigator.pop(context);
+                          // Navigator.of(context)
+                          //     .push(MaterialPageRoute(builder: (context) {
+                          //   return (LoginScreen());
+                          // }));
+                        },
+                        child: Text(
+                          'Envoyer un nouveau code',
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
