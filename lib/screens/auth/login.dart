@@ -1,11 +1,8 @@
+import 'package:app_drink_arena/helpers/handle_verification_form.dart';
+import 'package:app_drink_arena/repositories/userRepository.dart';
 import 'package:flutter/material.dart';
-import 'sign_in.dart';
-import 'recoverPassword.dart';
-
-enum FormData {
-  email,
-  password,
-}
+import '../../models/user.dart';
+import '../../theme/theme.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,25 +12,20 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  FormData? selected;
+  final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  late User user;
+  final UserRepository userRepository = UserRepository();
+  final HandleVerificationForm handleVerificationForm =
+      HandleVerificationForm();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFFFA800),
-              Color(0xFFB94DBB),
-            ],
-            stops: [0.0, 0.7344],
-          ),
-        ),
+        decoration: background(),
         child: Stack(children: [
           Container(
             alignment: const Alignment(0.75, 0.90),
@@ -61,36 +53,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ]),
-                Column(
-                  children: [
-                    SizedBox(
-                      width: 261,
-                      height: 52,
-                      child: TextField(
-                        controller: emailController,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Color(0xFF3F3636),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide.none,
-                          ),
-                          hintText: 'Email',
-                          hintStyle: Theme.of(context).textTheme.bodyMedium,
-                          contentPadding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                        ),
-                      ),
-                    ),
-                    const Padding(padding: EdgeInsets.all(10)),
-                    SizedBox(
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      SizedBox(
                         width: 261,
-                        height: 52,
-                        child: TextField(
-                          controller: passwordController,
+                        height: 80,
+                        child: TextFormField(
+                          controller: emailController,
                           style: Theme.of(context).textTheme.bodyMedium,
-                          obscureText: true,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: const Color(0xFF3F3636),
@@ -98,42 +70,95 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(30),
                               borderSide: BorderSide.none,
                             ),
-                            hintText: 'Mot de passe',
+                            hintText: 'Email',
                             hintStyle: Theme.of(context).textTheme.bodyMedium,
                             contentPadding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 16),
                           ),
-                        )),
-                    const Padding(padding: EdgeInsets.all(10)),
-                    Container(
-                      width: 261,
-                      height: 63,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Color.fromRGBO(114, 184, 81, 1),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromRGBO(0, 0, 0, 0.25),
-                            offset: Offset(0, 4),
-                            blurRadius: 4,
-                          )
-                        ],
-                      ),
-                      child: TextButton(
-                        onPressed: () {
-                          //Navigator.pop(context);
-                          // Navigator.of(context)
-                          //     .push(MaterialPageRoute(builder: (context) {
-                          //   return (RecoverPasswordScreen);
-                          // }));
-                        },
-                        child: Text(
-                          'Connecter',
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Veuillez saisir un email';
+                            }
+                            return handleVerificationForm
+                                .isEmailValid(emailController);
+                          },
                         ),
                       ),
-                    ),
-                  ],
+                      const Padding(padding: EdgeInsets.all(10)),
+                      SizedBox(
+                          width: 261,
+                          height: 90,
+                          child: TextFormField(
+                            controller: passwordController,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: const Color(0xFF3F3636),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide.none,
+                              ),
+                              hintText: 'Mot de passe',
+                              hintStyle: Theme.of(context).textTheme.bodyMedium,
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Veuillez saisir un mdp';
+                              }
+                              return null;
+                            },
+                          )),
+                      const Padding(padding: EdgeInsets.all(10)),
+                      Container(
+                        width: 261,
+                        height: 63,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Color.fromRGBO(114, 184, 81, 1),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromRGBO(0, 0, 0, 0.25),
+                              offset: Offset(0, 4),
+                              blurRadius: 4,
+                            )
+                          ],
+                        ),
+                        child: TextButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              // userRepository
+                              //     .login(emailController.text,
+                              //         passwordController.text)
+                              //     .then((value) =>
+                              //          emailController.clear();
+                              //          passwordController.clear();
+                              // Navigator.pop(context);
+                              //         Navigator.pushNamed(context, '/home'))
+                              //     .catchError((error) => {
+                              //           ScaffoldMessenger.of(context)
+                              //               .showSnackBar(
+                              //             const SnackBar(
+                              //               content: Text(
+                              //                   'Email ou mot de passe incorrect'),
+                              //             ),
+                              //           )
+                              //         });
+
+                              Navigator.pop(context);
+                              Navigator.pushNamed(context, '/home');
+                            }
+                          },
+                          child: Text(
+                            'Connecter',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 Column(
                   children: [
@@ -142,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 35,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: Color(0xFF70A2C7),
+                        color: const Color(0xFF70A2C7),
                         boxShadow: const [
                           BoxShadow(
                             color: Color.fromRGBO(0, 0, 0, 0.25),
@@ -153,11 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return (SignInScreen());
-                          }));
+                          Navigator.pushNamed(context, '/register');
                         },
                         child: Text(
                           'Pas de compte ?',
@@ -171,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 35,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: Color(0xFF70A2C7),
+                        color: const Color(0xFF70A2C7),
                         boxShadow: const [
                           BoxShadow(
                             color: Color.fromRGBO(0, 0, 0, 0.25),
@@ -182,11 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return (const RecoverPasswordScreen());
-                          }));
+                          Navigator.pushNamed(context, '/forgot-password');
                         },
                         child: Text(
                           'Mot de passe oublié ?',
@@ -200,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 40,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: Color.fromRGBO(114, 184, 81, 1),
+                        color: const Color.fromRGBO(114, 184, 81, 1),
                         boxShadow: const [
                           BoxShadow(
                             color: Color.fromRGBO(0, 0, 0, 0.25),
@@ -210,7 +227,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/home');
+                        },
                         child: Text(
                           'Connecter en tant qu\'invité',
                           style: Theme.of(context).textTheme.bodySmall,
@@ -221,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 )
               ],
             ),
-          )
+          ),
         ]),
       ),
     );

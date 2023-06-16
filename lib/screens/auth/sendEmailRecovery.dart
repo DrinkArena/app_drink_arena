@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/theme.dart';
 import 'login.dart';
 
 enum FormData {
@@ -21,17 +22,7 @@ class _SendEmailRecoveryScreenState extends State<SendEmailRecoveryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFFFA800),
-              Color(0xFFB94DBB),
-            ],
-            stops: [0.0, 0.7344],
-          ),
-        ),
+        decoration: background(),
         child: Stack(children: [
           Container(
             alignment: const Alignment(0.75, 0.90),
@@ -69,15 +60,15 @@ class _SendEmailRecoveryScreenState extends State<SendEmailRecoveryScreen> {
                         style: Theme.of(context).textTheme.bodyMedium,
                         decoration: InputDecoration(
                           filled: true,
-                          fillColor: Color(0xFF3F3636),
+                          fillColor: const Color(0xFF3F3636),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30),
                             borderSide: BorderSide.none,
                           ),
                           hintText: 'Email d\'envoi',
                           hintStyle: Theme.of(context).textTheme.bodyMedium,
-                          contentPadding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 16),
                         ),
                       ),
                     ),
@@ -98,11 +89,7 @@ class _SendEmailRecoveryScreenState extends State<SendEmailRecoveryScreen> {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return (LoginScreen());
-                          }));
+                          Navigator.pushNamed(context, '/login');
                         },
                         child: Text(
                           'Envoyer',

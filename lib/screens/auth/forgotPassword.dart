@@ -1,22 +1,21 @@
 import 'package:app_drink_arena/helpers/handle_verification_form.dart';
+import 'package:app_drink_arena/repositories/userRepository.dart';
 import 'package:app_drink_arena/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-// FAIRE LA PARTIE DANS LE REPOSITORY POUR LE CHANGEMENT DE MOT DE PASSE
-class ChangePasswordScreen extends StatefulWidget {
-  const ChangePasswordScreen({super.key});
-
+class ForgotPasswordScreen extends StatefulWidget {
+  const ForgotPasswordScreen({super.key});
   @override
-  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController samepasswordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
 
   final HandleVerificationForm handleVerificationForm =
       HandleVerificationForm();
+  final UserRepository userRepository = UserRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -58,15 +57,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         width: 261,
                         height: 80,
                         child: TextFormField(
-                          controller: passwordController,
+                          controller: emailController,
                           style: Theme.of(context).textTheme.bodyMedium,
-                          obscureText: true,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Veuillez saisir un mot de passe';
+                              return handleVerificationForm
+                                  .isEmailValid(emailController);
                             }
-                            return handleVerificationForm
-                                .isPasswordValid(passwordController);
+                            return null;
                           },
                           decoration: InputDecoration(
                             filled: true,
@@ -75,43 +73,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               borderRadius: BorderRadius.circular(30),
                               borderSide: BorderSide.none,
                             ),
-                            hintText: 'mot de passe',
+                            hintText: 'Email d\'envoi',
                             hintStyle: Theme.of(context).textTheme.bodyMedium,
                             contentPadding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 16),
                           ),
                         ),
                       ),
-                      const Padding(padding: EdgeInsets.all(10)),
-                      SizedBox(
-                          width: 261,
-                          height: 80,
-                          child: TextFormField(
-                            controller: samepasswordController,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Les mots de passe ne sont pas identiques';
-                              }
-                              return handleVerificationForm
-                                  .issamepasswordControllerValid(
-                                      passwordController,
-                                      samepasswordController);
-                            },
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: const Color(0xFF3F3636),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
-                                borderSide: BorderSide.none,
-                              ),
-                              hintText: 'Confirmer mdp',
-                              hintStyle: Theme.of(context).textTheme.bodyMedium,
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                            ),
-                          )),
                       const Padding(padding: EdgeInsets.all(10)),
                       Container(
                         width: 261,
@@ -130,16 +98,24 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         child: TextButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Mot de passe changé'),
-                                ),
-                              );
-                              Navigator.pushNamed(context, '/login');
+                              //   userRepository
+                              //       .recoverPassword(emailController.text)
+                              //       .then((value) {
+                              //     Navigator.pushNamed(
+                              //         context, '/verification-code');
+                              //   }).catchError((error) {
+                              //     ScaffoldMessenger.of(context).showSnackBar(
+                              //       const SnackBar(
+                              //         content: Text('Email invalide'),
+                              //       ),
+                              //     );
+                              //   });
+                              Navigator.pushNamed(
+                                  context, '/verification-code');
                             }
                           },
                           child: Text(
-                            'Changer',
+                            'Envoyer',
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ),
@@ -165,16 +141,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/login');
+                          Navigator.pop(context);
                         },
                         child: Text(
-                          'Retour à la connexion ?',
+                          'Retour à la connexion',
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
                     ),
                   ],
-                ),
+                )
               ],
             ),
           )
