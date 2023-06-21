@@ -2,7 +2,7 @@ import 'package:app_drink_arena/helpers/handle_verification_form.dart';
 import 'package:app_drink_arena/models/user.dart';
 import 'package:app_drink_arena/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:app_drink_arena/repositories/userRepository.dart';
+import 'package:app_drink_arena/repositories/user_repository.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -103,7 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             decoration: InputDecoration(
                               hintText: 'Email',
                               filled: true,
-                              fillColor: Color(0xFF3F3636),
+                              fillColor: const Color(0xFF3F3636),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30),
                                 borderSide: BorderSide.none,
@@ -130,7 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               obscureText: true,
                               decoration: InputDecoration(
                                 filled: true,
-                                fillColor: Color(0xFF3F3636),
+                                fillColor: const Color(0xFF3F3636),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30),
                                   borderSide: BorderSide.none,
@@ -160,7 +160,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               obscureText: true,
                               decoration: InputDecoration(
                                 filled: true,
-                                fillColor: Color(0xFF3F3636),
+                                fillColor: const Color(0xFF3F3636),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30),
                                   borderSide: BorderSide.none,

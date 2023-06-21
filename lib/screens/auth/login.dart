@@ -1,5 +1,5 @@
 import 'package:app_drink_arena/helpers/handle_verification_form.dart';
-import 'package:app_drink_arena/repositories/userRepository.dart';
+import 'package:app_drink_arena/repositories/user_repository.dart';
 import 'package:flutter/material.dart';
 import '../../models/user.dart';
 import '../../theme/theme.dart';
