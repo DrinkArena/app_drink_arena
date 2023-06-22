@@ -1,9 +1,14 @@
 import 'package:app_drink_arena/screens/auth/changePassword.dart';
 import 'package:app_drink_arena/screens/auth/forgotPassword.dart';
 import 'package:app_drink_arena/screens/auth/verificationCode.dart';
-import 'package:app_drink_arena/screens/history/history.dart';
+import 'package:app_drink_arena/screens/profile/changePasswordByProfile.dart';
+import 'package:app_drink_arena/screens/profile/myChallenge.dart';
+// import 'package:app_drink_arena/screens/history/history.dart';
+// import 'package:app_drink_arena/screens/profile/changePasswordByProfile.dart';
+// import 'package:app_drink_arena/screens/profile/myChallenge.dart';
 import 'package:app_drink_arena/screens/profile/profile.dart';
 import 'package:app_drink_arena/theme/theme.dart';
+import 'package:app_drink_arena/widgets/NavBar.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/auth/login.dart';
@@ -29,7 +34,12 @@ class MyApp extends StatelessWidget {
         '/verification-code': (context) => VerificationCodeScreen(),
         '/change_password': (context) => ChangePasswordScreen(),
         '/profile': (context) => ProfileScreen(),
-        '/history': (context) => HistoryScreen(),
+        // '/': (context) => LandingScreen(),
+        '/menu': (context) => NavBarWidget(),
+        //  '/history': (context) => HistoryScreen(),
+        // '/profile/my_challenge': (context) => MyChallengeScreen(),
+        // '/profile/change_password_by_profile': (context) =>
+        // ChangePasswordByProfileScreen(),
         //'/about': (context) => AboutScreen(),
         //'/contact': (context) => ContactScreen(),
         // '/help': (context) => HelpScreen(),
@@ -62,11 +72,11 @@ class _LandingScreenState extends State<LandingScreen> {
     Future<bool> shouldSwitch = checkIfUserShouldSwitchPage();
     if (!await shouldSwitch) {
       Future.delayed(Duration.zero, () {
-        Navigator.pushNamed(context, '/login');
+        Navigator.popAndPushNamed(context, '/menu');
       });
     } else {
       Future.delayed(Duration.zero, () {
-        Navigator.pushNamed(context, '/history');
+        Navigator.popAndPushNamed(context, '/login');
       });
     }
   }

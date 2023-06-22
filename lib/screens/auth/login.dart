@@ -148,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               //         });
 
                               Navigator.pop(context);
-                              Navigator.pushNamed(context, '/home');
+                              Navigator.pushNamed(context, '/menu');
                             }
                           },
                           child: Text(
@@ -217,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 40,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: const Color.fromRGBO(114, 184, 81, 1),
+                        color: const Color(0xFF72B851),
                         boxShadow: const [
                           BoxShadow(
                             color: Color.fromRGBO(0, 0, 0, 0.25),
@@ -228,7 +228,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/home');
+                          Navigator.pushNamed(context, '/menu');
                         },
                         child: Text(
                           'Connecter en tant qu\'invité',

@@ -14,7 +14,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return Scaffold(
       body: Container(
         decoration: background(),
-        child: Text('Home Screen'),
+        child: Text('Profil'),
       ),
     );
   }

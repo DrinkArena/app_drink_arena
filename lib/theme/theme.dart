@@ -6,8 +6,12 @@ ThemeData theme() {
     textTheme: const TextTheme(
       headlineMedium: TextStyle(
           fontSize: 32, fontFamily: 'Knewave', color: Color(0xFFFFFFFF)),
+      // Pour les titres
       headlineLarge: TextStyle(
-          fontSize: 48, fontFamily: 'Knewave', color: Color(0xFFFFFFFF)),
+        fontSize: 48,
+        fontFamily: 'Knewave',
+        color: Color(0xFFFFFFFF),
+      ),
       bodySmall: TextStyle(
           fontSize: 16, fontFamily: 'Kavoon', color: Color(0xFFFFFFFF)),
       bodyMedium: TextStyle(
