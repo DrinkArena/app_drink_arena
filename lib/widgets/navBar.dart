@@ -1,3 +1,4 @@
+import 'package:app_drink_arena/screens/history/historyScreen.dart';
 import 'package:app_drink_arena/screens/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
@@ -5,13 +6,13 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 class NavBarWidget extends StatelessWidget {
   NavBarWidget({Key? key}) : super(key: key);
 
-  PersistentTabController _controller =
+  final PersistentTabController _controller =
       PersistentTabController(initialIndex: 0);
 
   List<Widget> _buildScreens() {
     return [
       ProfileScreen(),
-      ProfileScreen(),
+      HistoryScreen(),
       ProfileScreen(),
     ];
   }
