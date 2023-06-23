@@ -1,7 +1,5 @@
 import 'dart:ffi';
 
-import 'package:flutter/foundation.dart';
-
 class History {
   final DateTime date;
   final Int64 amount;
@@ -14,9 +12,4 @@ class History {
       amount: json['amount'],
     );
   }
-
-  Map<String, dynamic> toJson() => {
-        'date': date,
-        'amount': amount,
-      };
 }

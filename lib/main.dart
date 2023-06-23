@@ -10,6 +10,7 @@ import 'package:app_drink_arena/screens/profile/profile.dart';
 import 'package:app_drink_arena/theme/theme.dart';
 import 'package:app_drink_arena/widgets/NavBar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/auth/login.dart';
 import 'screens/auth/register.dart';
