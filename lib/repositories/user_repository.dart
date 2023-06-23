@@ -4,10 +4,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '/models/user.dart';
 
-_dotenv() async {
-  await dotenv.load(fileName: ".env");
-}
-
 final String _baseUrl = dotenv.env['BASE_URL'].toString();
 
 class UserRepository {
