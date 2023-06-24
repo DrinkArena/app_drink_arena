@@ -2,7 +2,7 @@ import 'package:app_drink_arena/screens/auth/changePassword.dart';
 import 'package:app_drink_arena/screens/auth/forgotPassword.dart';
 import 'package:app_drink_arena/screens/auth/verificationCode.dart';
 import 'package:app_drink_arena/screens/profile/changePasswordByProfile.dart';
-import 'package:app_drink_arena/screens/profile/myChallenge.dart';
+import 'package:app_drink_arena/screens/profile/myPledge.dart';
 // import 'package:app_drink_arena/screens/history/history.dart';
 // import 'package:app_drink_arena/screens/profile/changePasswordByProfile.dart';
 // import 'package:app_drink_arena/screens/profile/myChallenge.dart';
@@ -38,7 +38,6 @@ class MyApp extends StatelessWidget {
         // '/': (context) => LandingScreen(),
         '/menu': (context) => NavBarWidget(),
         //  '/history': (context) => HistoryScreen(),
-        // '/profile/my_challenge': (context) => MyChallengeScreen(),
         // '/profile/change_password_by_profile': (context) =>
         // ChangePasswordByProfileScreen(),
         //'/about': (context) => AboutScreen(),

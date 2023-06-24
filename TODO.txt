@@ -1,4 +1,4 @@
 TODO : 
 Profile : 
     - data binding
-    
+    - requestRecoverPassword get ??? should be post 
