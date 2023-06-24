@@ -28,7 +28,7 @@ class GameRepository {
     }
   }
 
-  Future joinRoom(Int64 idRoom) async {
+  Future joinRoom(int idRoom) async {
     await dotenv.load(fileName: ".env");
     String baseUrl = dotenv.env['BASE_URL'].toString();
     var url = Uri.parse('$baseUrl/room/$idRoom');

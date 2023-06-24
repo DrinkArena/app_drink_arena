@@ -1,8 +1,6 @@
-import 'dart:ffi';
-
 class History {
   final DateTime date;
-  final Int64 amount;
+  final int amount;
 
   History({required this.date, required this.amount});
 

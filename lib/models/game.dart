@@ -2,7 +2,7 @@ import 'dart:ffi';
 
 class Game {
   final String? name;
-  final Int64? id;
+  final int? id;
 
   Game({this.name, this.id});
 

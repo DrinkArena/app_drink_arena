@@ -1,4 +1,5 @@
 import 'package:app_drink_arena/helpers/handle_verification_form.dart';
+import 'package:app_drink_arena/screens/game/gameLobby.dart';
 import 'package:app_drink_arena/screens/game/onGame.dart';
 import 'package:app_drink_arena/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,13 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Text(
+                      'ID : 123456',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     Container(
                       height: MediaQuery.of(context).size.height * 0.7,
                       width: MediaQuery.of(context).size.width * 0.8,
@@ -95,7 +103,14 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                   ),
                                   child: TextButton(
                                     onPressed: () {
-                                      Navigator.pop(context);
+                                      Navigator.of(context).pop();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const GameLobbyScreen(),
+                                        ),
+                                      );
                                     },
                                     child: Text(
                                       'Annuler',

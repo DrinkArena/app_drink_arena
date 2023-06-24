@@ -1,7 +1,7 @@
 import 'dart:ffi';
 
 class Pledge {
-  Int64? id;
+  int? id;
   String? title;
 
   Pledge({this.id, this.title});

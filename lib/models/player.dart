@@ -1,7 +1,5 @@
-import 'dart:ffi';
-
 class Player {
-  Int64? id;
+  int? id;
   String? username;
   bool? isOwner;
 

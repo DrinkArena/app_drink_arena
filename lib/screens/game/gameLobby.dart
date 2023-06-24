@@ -1,3 +1,5 @@
+import 'package:app_drink_arena/models/user.dart';
+import 'package:app_drink_arena/repositories/user_repository.dart';
 import 'package:app_drink_arena/screens/game/createRoom.dart';
 import 'package:app_drink_arena/screens/game/joinRoom.dart';
 import 'package:app_drink_arena/theme/theme.dart';
@@ -11,6 +13,8 @@ class GameLobbyScreen extends StatefulWidget {
 }
 
 class _GameLobbyScreenState extends State<GameLobbyScreen> {
+  UserRepository userRepository = UserRepository();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +26,7 @@ class _GameLobbyScreenState extends State<GameLobbyScreen> {
             children: [
               Text(
                 'Que faire ?',
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headlineLarge,
               ),
               Column(
                 children: [
@@ -86,9 +90,34 @@ class _GameLobbyScreenState extends State<GameLobbyScreen> {
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
-                  )
+                  ),
                 ],
-              )
+              ),
+              Container(
+                width: 204,
+                height: 55,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: const Color(0xFFB85151),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromRGBO(0, 0, 0, 0.25),
+                      offset: Offset(0, 4),
+                      blurRadius: 4,
+                    )
+                  ],
+                ),
+                child: TextButton(
+                  onPressed: () {
+                    userRepository.logout();
+                    Navigator.popAndPushNamed(context, '/login');
+                  },
+                  child: Text(
+                    'Se déconnecter',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
