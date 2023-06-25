@@ -83,11 +83,11 @@ class _OnGameScreenState extends State<OnGameScreen> {
                           child: TextButton(
                             onPressed: () {
                               // GameRepository().leaveGame();
-                              Navigator.of(context).pop();
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return const GameLobbyScreen();
-                              }));
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const GameLobbyScreen()),
+                                  (Route<dynamic> route) => false);
                             },
                             child: Text(
                               'Quitter',
@@ -112,7 +112,8 @@ class _OnGameScreenState extends State<OnGameScreen> {
                               color: const Color(0xFF6B5E5E),
                               width: MediaQuery.of(context).size.width * 0.8,
                               height: MediaQuery.of(context).size.height * 0.5,
-                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
                               child: Center(
                                   child: Text(
                                 'Si tu as déja manger un tacos à 3 heure du matin après une fête alors bois 2 gorgé.',
@@ -137,7 +138,7 @@ class _OnGameScreenState extends State<OnGameScreen> {
                               child: TextButton(
                                 onPressed: () {},
                                 child: Text(
-                                  'Jouer',
+                                  'Suivant',
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                               ),

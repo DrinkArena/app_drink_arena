@@ -1,4 +1,6 @@
 TODO : 
-Profile : 
     - data binding
     - requestRecoverPassword get ??? should be post 
+    - Historique use fake data and hundle exeption
+    - profile add button need a pop up
+    - add Icon and splashcreen
