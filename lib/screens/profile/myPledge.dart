@@ -1,14 +1,14 @@
 import 'package:app_drink_arena/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-class MyChallengeScreen extends StatefulWidget {
-  const MyChallengeScreen({super.key});
+class MyPledgeScreen extends StatefulWidget {
+  const MyPledgeScreen({super.key});
 
   @override
-  State<MyChallengeScreen> createState() => _MyChallengeScreenState();
+  State<MyPledgeScreen> createState() => _MyPledgeScreenState();
 }
 
-class _MyChallengeScreenState extends State<MyChallengeScreen> {
+class _MyPledgeScreenState extends State<MyPledgeScreen> {
   List<String> dataTest = [
     "'Test de goût les yeux bandés : Bandez les yeux de chaque participant et faites-leur goûter différents aliments ou boissons pour voir s'ils peuvent deviner ce que c'est.",
     "Relais de crevaison de ballons : Divisez-vous en équipes et organisez une course de relais où chaque personne doit s'asseoir sur un ballon pour le faire éclater avant que le membre suivant de l'équipe puisse commencer.",

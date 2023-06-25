@@ -34,12 +34,24 @@ class HandleVerificationForm {
   }
 
   String? isPasswordValid(TextEditingController passwordController) {
-    if (passwordController.text.length >= 8 &&
-        passwordController.text.contains(RegExp(r'[0-9]')) &&
-        passwordController.text.contains(RegExp(r'[A-Z]')) &&
-        passwordController.text.contains(RegExp(r'[a-z]'))) {
+    if (passwordController.text.length >= 8) {
+      //           passwordController.text.contains(RegExp(r'[0-9]')) &&
+      // passwordController.text.contains(RegExp(r'[A-Z]')) &&
+      // passwordController.text.contains(RegExp(r'[a-z]'))
       return null;
     }
     return "Le mot de passe doit au moins 8 caractères, une majuscule, une minuscule et un chiffre";
+  }
+
+  String? isNameValid(TextEditingController nameController) {
+    if (nameController.text.length >= 3) {
+      // no special characters
+      if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]')
+          .hasMatch(nameController.text)) {
+        return "Le nom ne doit pas contenir de caractères spéciaux";
+      }
+      return null;
+    }
+    return "Le nom doit contenir au moins 3 caractères";
   }
 }

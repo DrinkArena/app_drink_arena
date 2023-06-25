@@ -1,3 +1,4 @@
+import 'package:app_drink_arena/screens/game/gameLobby.dart';
 import 'package:app_drink_arena/screens/history/historyScreen.dart';
 import 'package:app_drink_arena/screens/profile/profile.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ class NavBarWidget extends StatelessWidget {
 
   List<Widget> _buildScreens() {
     return [
-      ProfileScreen(),
+      GameLobbyScreen(),
       HistoryScreen(),
       ProfileScreen(),
     ];
