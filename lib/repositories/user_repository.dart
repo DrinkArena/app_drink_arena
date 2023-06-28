@@ -49,7 +49,7 @@ class UserRepository {
 
       prefs.setString('token', token);
     } else {
-      throw Exception('No user found');
+      throw Exception('Ce compte n\'existe pas');
     }
   }
 
@@ -64,7 +64,7 @@ class UserRepository {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? email = prefs.getString('email');
 
-    Uri url = Uri.parse('$baseUrl/users/request-forgot-password');
+    Uri url = Uri.parse('$baseUrl/user/request-forgot-password');
     dynamic response = await http.post(
       url,
       headers: <String, String>{
@@ -84,7 +84,7 @@ class UserRepository {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? email = prefs.getString('email');
 
-    var url = Uri.parse('$baseUrl/recover-password');
+    var url = Uri.parse('$baseUrl/user/recover-password');
     var response = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -100,7 +100,7 @@ class UserRepository {
       // return respose.body to int
       return int.parse(response.body);
     } else {
-      throw Exception('No user found');
+      throw Exception('Mauvais code de récupération');
     }
   }
 }

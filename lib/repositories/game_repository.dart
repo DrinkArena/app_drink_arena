@@ -9,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class GameRepository {
   Future createRoom(String name) async {
-    await dotenv.load(fileName: ".env");
     String baseUrl = dotenv.env['BASE_URL'].toString();
     var url = Uri.parse('$baseUrl/room');
     var response = await http.post(
@@ -29,9 +28,8 @@ class GameRepository {
   }
 
   Future joinRoom(int idRoom) async {
-    await dotenv.load(fileName: ".env");
     String baseUrl = dotenv.env['BASE_URL'].toString();
-    var url = Uri.parse('$baseUrl/room/$idRoom');
+    var url = Uri.parse('$baseUrl/room/$idRoom/join');
     var response = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -46,14 +44,29 @@ class GameRepository {
     }
   }
 
-  Future<List<Player>> getRoom() async {
-    await dotenv.load(fileName: ".env");
+  Future leaveRoom() async {
     String baseUrl = dotenv.env['BASE_URL'].toString();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? roomString = prefs.getString('room');
+    String? roomId = prefs.getString('room');
 
-    var url = Uri.parse('$baseUrl/room/$roomString');
+    var url = Uri.parse('$baseUrl/room/$roomId/leave');
+    var response = await http.post(url);
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    if (response.statusCode == 200) {
+      prefs.remove('room');
+      prefs.remove('OwnerId');
+    }
+  }
+
+  Future<List<Player>> getRoom() async {
+    String baseUrl = dotenv.env['BASE_URL'].toString();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? roomId = prefs.getString('room');
+
+    var url = Uri.parse('$baseUrl/room/$roomId');
     var response = await http.get(url);
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
@@ -81,13 +94,12 @@ class GameRepository {
   }
 
   Future<String> startGame() async {
-    await dotenv.load(fileName: ".env");
     String baseUrl = dotenv.env['BASE_URL'].toString();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? roomString = prefs.getString('room');
+    String? roomId = prefs.getString('room');
 
-    var url = Uri.parse('$baseUrl/room/$roomString/pledge/next');
+    var url = Uri.parse('$baseUrl/room/$roomId/pledge/next');
     var response = await http.get(url);
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
@@ -96,7 +108,7 @@ class GameRepository {
       String pledge = jsonDecode(response.body)['pledge'];
       return pledge;
     } else {
-      throw Exception('No room found');
+      throw Exception('La partie n\'a pas pu commencer');
     }
   }
 

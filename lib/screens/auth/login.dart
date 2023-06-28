@@ -138,9 +138,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                         Navigator.pop(context),
                                         Navigator.pushNamed(context, '/home')
                                       })
-                                  .catchError((onError) => {print(onError)});
-                              Navigator.pop(context);
-                              Navigator.pushNamed(context, '/menu');
+                                  .catchError((error) => {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: Text(error.toString(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .displaySmall),
+                                        ))
+                                      });
                             }
                           },
                           child: Text(

@@ -5,7 +5,6 @@ import 'dart:ffi';
 
 class PledgeRepository {
   Future<void> createPledge(String pledge) async {
-    await dotenv.load(fileName: ".env");
     String baseUrl = dotenv.env['BASE_URL'].toString();
 
     var url = Uri.parse('$baseUrl/pledge');
@@ -24,7 +23,7 @@ class PledgeRepository {
     await dotenv.load(fileName: ".env");
     String baseUrl = dotenv.env['BASE_URL'].toString();
 
-    var url = Uri.parse('$baseUrl/pledge');
+    var url = Uri.parse('$baseUrl/pledge/me');
     var response = await http.get(url);
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
@@ -39,5 +38,14 @@ class PledgeRepository {
     } else {
       throw Exception('No pledges found');
     }
+  }
+
+  Future<void> deletePledge(String pledgeId) async {
+    String baseUrl = dotenv.env['BASE_URL'].toString();
+
+    var url = Uri.parse('$baseUrl/pledge/$pledgeId');
+    var response = await http.delete(url);
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
   }
 }
