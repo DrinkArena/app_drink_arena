@@ -13,7 +13,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController emailController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   late User user;
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: 261,
                         height: 80,
                         child: TextFormField(
-                          controller: emailController,
+                          controller: usernameController,
                           style: Theme.of(context).textTheme.bodyMedium,
                           decoration: InputDecoration(
                             filled: true,
@@ -70,17 +70,17 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(30),
                               borderSide: BorderSide.none,
                             ),
-                            hintText: 'Email',
+                            hintText: 'Pseudo',
                             hintStyle: Theme.of(context).textTheme.bodyMedium,
                             contentPadding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 16),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Veuillez saisir un email';
+                              return 'Veuillez saisir un pseudo';
                             }
                             return handleVerificationForm
-                                .isEmailValid(emailController);
+                                .isPseudoValid(usernameController);
                           },
                         ),
                       ),
@@ -129,24 +129,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: TextButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              // userRepository
-                              //     .login(emailController.text,
-                              //         passwordController.text)
-                              //     .then((value) =>
-                              //          emailController.clear();
-                              //          passwordController.clear();
-                              // Navigator.pop(context);
-                              //         Navigator.pushNamed(context, '/home'))
-                              //     .catchError((error) => {
-                              //           ScaffoldMessenger.of(context)
-                              //               .showSnackBar(
-                              //             const SnackBar(
-                              //               content: Text(
-                              //                   'Email ou mot de passe incorrect'),
-                              //             ),
-                              //           )
-                              //         });
-
+                              userRepository
+                                  .login(usernameController.text,
+                                      passwordController.text)
+                                  .then((value) => {
+                                        usernameController.clear(),
+                                        passwordController.clear(),
+                                        Navigator.pop(context),
+                                        Navigator.pushNamed(context, '/home')
+                                      })
+                                  .catchError((onError) => {print(onError)});
                               Navigator.pop(context);
                               Navigator.pushNamed(context, '/menu');
                             }

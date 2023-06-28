@@ -6,7 +6,6 @@ import '/models/user.dart';
 
 class UserRepository {
   Future<void> saveUser(User user) async {
-    await dotenv.load(fileName: ".env");
     String baseUrl = dotenv.env['BASE_URL'].toString();
     Uri url = Uri.parse('$baseUrl/user');
     dynamic response = await http.post(
@@ -33,18 +32,22 @@ class UserRepository {
     }
   }
 
-  Future<void> login(String email, String password) async {
-    await dotenv.load(fileName: ".env");
+  Future<void> login(String username, String password) async {
     String baseUrl = dotenv.env['BASE_URL'].toString();
     // get user in the database
-    Uri url = Uri.parse('$baseUrl/users/$email/$password');
-    dynamic response = await http.get(url);
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    Uri url = Uri.parse('$baseUrl/login_check');
+    var response = await http.post(url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'username': username, 'password': password}));
+
     if (response.statusCode == 200) {
-      // set user in the local storage
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('user', response.body);
+      dynamic token = jsonDecode(response.body)['token'];
+      print('Response body: ${token}');
+
+      prefs.setString('token', token);
     } else {
       throw Exception('No user found');
     }
@@ -56,7 +59,6 @@ class UserRepository {
   }
 
   Future<String> requestForgotPassword() async {
-    await dotenv.load(fileName: ".env");
     String baseUrl = dotenv.env['BASE_URL'].toString();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -77,7 +79,6 @@ class UserRepository {
   }
 
   Future<int> recoverPassword(String password, String recoverCode) async {
-    await dotenv.load(fileName: ".env");
     String baseUrl = dotenv.env['BASE_URL'].toString();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();

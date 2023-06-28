@@ -111,7 +111,7 @@ class _GameLobbyScreenState extends State<GameLobbyScreen> {
                   onPressed: () {
                     userRepository.logout();
                     Navigator.of(context, rootNavigator: true)
-                        .pushNamed('/login');
+                        .popAndPushNamed('/login');
                   },
                   child: Text(
                     'Se déconnecter',
