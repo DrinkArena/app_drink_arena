@@ -194,7 +194,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   email: emailController.text,
                                   password: passwordController.text,
                                 );
-                                userRepository.saveUser(user).then((value) {
+                                userRepository.register(user).then((value) {
                                   Navigator.pushNamed(context, '/login');
                                 });
                               }

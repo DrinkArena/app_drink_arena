@@ -67,9 +67,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 35),
-                            child: Text(
-                              'Pseudo_normal',
-                              style: Theme.of(context).textTheme.bodyMedium,
+                            // get username in the local storage
+                            child: FutureBuilder<String>(
+                              future: userRepository.getUser(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    snapshot.data.toString(),
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge,
+                                  );
+                                }
+                                return const CircularProgressIndicator();
+                              },
                             ),
                           ),
                         ],

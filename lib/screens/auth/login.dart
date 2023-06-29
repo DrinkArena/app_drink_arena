@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         usernameController.clear(),
                                         passwordController.clear(),
                                         Navigator.pop(context),
-                                        Navigator.pushNamed(context, '/home')
+                                        Navigator.pushNamed(context, '/menu')
                                       })
                                   .catchError((error) => {
                                         ScaffoldMessenger.of(context)

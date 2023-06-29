@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import '/models/user.dart';
 
 class UserRepository {
-  Future<void> saveUser(User user) async {
+  Future<void> register(User user) async {
     String baseUrl = dotenv.env['BASE_URL'].toString();
     Uri url = Uri.parse('$baseUrl/user');
     dynamic response = await http.post(
@@ -19,16 +19,14 @@ class UserRepository {
     print('Response body: ${response.body}');
   }
 
-  Future<User> getUser() async {
+  Future<String> getUser() async {
     // get user in the local storage
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userString = prefs.getString('user');
-    if (userString != null) {
-      Map<String, dynamic> userMap = jsonDecode(userString);
-      User user = User.fromJson(userMap);
-      return user;
+    String? username = prefs.getString('username');
+    if (username != null) {
+      return username;
     } else {
-      throw Exception('No user found');
+      return 'Invité';
     }
   }
 
@@ -48,6 +46,7 @@ class UserRepository {
       print('Response body: ${token}');
 
       prefs.setString('token', token);
+      prefs.setString('username', username);
     } else {
       throw Exception('Ce compte n\'existe pas');
     }
