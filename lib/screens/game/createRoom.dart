@@ -1,4 +1,5 @@
 import 'package:app_drink_arena/helpers/handle_verification_form.dart';
+import 'package:app_drink_arena/repositories/game_repository.dart';
 import 'package:app_drink_arena/screens/game/gameRoom.dart';
 import 'package:app_drink_arena/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class CreateRoomScreen extends StatefulWidget {
 class _CreateRoomScreenState extends State<CreateRoomScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController nameRoom = TextEditingController();
+  final GameRepository _gameRepository = GameRepository();
 
   final HandleVerificationForm handleVerificationForm =
       HandleVerificationForm();
@@ -80,13 +82,19 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                               ),
                               child: TextButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const GameRoomScreen(),
-                                    ),
-                                  );
+                                  if (_formKey.currentState!.validate()) {
+                                    _gameRepository.createRoom(nameRoom.text);
+                                    Future.delayed(const Duration(seconds: 1),
+                                        () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const GameRoomScreen(),
+                                        ),
+                                      );
+                                    });
+                                  }
                                 },
                                 child: Text(
                                   'Créer',

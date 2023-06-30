@@ -21,14 +21,15 @@ class GameRepository {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ${await _userRepository.getToken()}'
       },
-      body: jsonEncode(name),
+      body: jsonEncode({'name': name}),
     );
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     if (response.statusCode == 200) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       Game game = Game.fromJson(jsonDecode(response.body));
-      prefs.setString('room', game.id.toString());
+      prefs.setInt('room', game.id!);
+      prefs.setString('Owner', game.owner!.username!);
     }
   }
 
@@ -40,22 +41,26 @@ class GameRepository {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer ${await _userRepository.getToken()}'
         },
-        body: jsonEncode(idRoom));
+        body: jsonEncode({'id': idRoom}));
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     if (response.statusCode == 200) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       Game game = Game.fromJson(jsonDecode(response.body));
-      prefs.setString('room', game.id.toString());
+      prefs.setInt('room', game.id!);
     }
   }
 
-  Future leaveRoom() async {
+  Future leaveGame() async {
     String baseUrl = dotenv.env['BASE_URL'].toString();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? roomId = prefs.getString('room');
+    int? roomId = prefs.getInt('room');
 
+    if (roomId == null) {
+      print('Room ID is null');
+      return;
+    }
     var url = Uri.parse('$baseUrl/room/$roomId/leave');
     var response = await http.post(
       url,
@@ -135,9 +140,9 @@ class GameRepository {
     }
   }
 
-  Future<void> leaveGame() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('room');
-    prefs.remove('OwnerId');
-  }
+  // Future<void> leaveGame() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   prefs.remove('room');
+  //   prefs.remove('OwnerId');
+  // }
 }

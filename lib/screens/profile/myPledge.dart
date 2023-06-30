@@ -130,8 +130,8 @@ class _MyPledgeScreenState extends State<MyPledgeScreen> {
                                   if (_newPledge.text.isNotEmpty) {
                                     PledgeRepository()
                                         .createPledge(_newPledge.text);
-                                    new Future.delayed(
-                                        const Duration(seconds: 1), () {
+                                    Future.delayed(const Duration(seconds: 1),
+                                        () {
                                       setState(() {
                                         _newPledge.clear();
                                       });

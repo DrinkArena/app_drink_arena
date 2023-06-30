@@ -1,4 +1,5 @@
 import 'package:app_drink_arena/helpers/handle_verification_form.dart';
+import 'package:app_drink_arena/repositories/game_repository.dart';
 import 'package:app_drink_arena/screens/game/gameLobby.dart';
 import 'package:app_drink_arena/screens/game/onGame.dart';
 import 'package:app_drink_arena/theme/theme.dart';
@@ -19,6 +20,8 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
     "Pseudo4",
     "Pseudo5",
   ];
+
+  final GameRepository _gameRepository = GameRepository();
 
   bool toggleColor = false;
 
@@ -103,14 +106,19 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                   ),
                                   child: TextButton(
                                     onPressed: () {
-                                      Navigator.of(context).pop();
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const GameLobbyScreen(),
-                                        ),
-                                      );
+                                      _gameRepository.leaveGame();
+                                      Future.delayed(
+                                          const Duration(milliseconds: 500),
+                                          () {
+                                        // Navigator.of(context).pop();
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //     builder: (context) =>
+                                        //         const GameLobbyScreen(),
+                                        //   ),
+                                        // );
+                                      });
                                     },
                                     child: Text(
                                       'Annuler',
