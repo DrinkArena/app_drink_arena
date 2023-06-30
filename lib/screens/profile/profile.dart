@@ -14,6 +14,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   UserRepository userRepository = UserRepository();
 
+  bool _isInvited = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,6 +74,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               future: userRepository.getUser(),
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
+                                  snapshot.data.toString() == 'Invité'
+                                      ? _isInvited = true
+                                      : _isInvited = false;
                                   return Text(
                                     snapshot.data.toString(),
                                     style:
@@ -86,96 +91,102 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       )
                     ],
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MyPledgeScreen(),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF70A2C7),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 90),
-                    ),
-                    child: Text(
-                      'Tout vos gages',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(bottom: 40),
-                        child: ElevatedButton(
+                  _isInvited
+                      ? ElevatedButton(
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    const ChangePasswordByProfileScreen(),
+                                builder: (context) => const MyPledgeScreen(),
                               ),
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFB85151),
+                            backgroundColor: const Color(0xFF70A2C7),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                             padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 40),
+                                vertical: 12, horizontal: 90),
                           ),
                           child: Text(
-                            'Changer de mot de passe',
+                            'Tout vos gages',
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(bottom: 40),
-                        child: TextButton(
-                          onPressed: () => showDialog(
-                              context: context,
-                              builder: ((context) => AlertDialog(
-                                    title: const Text('Supprimer mon compte'),
-                                    content: const Text(
-                                        'Etes vous sur de vouloir supprimer votre compte ?'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, 'Annuler'),
-                                        child: const Text('Annuler'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () => {
-                                          // userRepository.deleteUser(),
-                                          Navigator.pop(context, 'Supprimer')
-                                        },
-                                        child: const Text('Supprimer'),
-                                      ),
-                                    ],
-                                  ))),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFB85151),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                        )
+                      : Container(),
+                  _isInvited
+                      ? Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 40),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ChangePasswordByProfileScreen(),
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFB85151),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 40),
+                                ),
+                                child: Text(
+                                  'Changer de mot de passe',
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                              ),
                             ),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 40),
-                          ),
-                          child: Text(
-                            'Supprimer mon compte',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                      )
-                    ],
-                  )
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 40),
+                              child: TextButton(
+                                onPressed: () => showDialog(
+                                    context: context,
+                                    builder: ((context) => AlertDialog(
+                                          title: const Text(
+                                              'Supprimer mon compte'),
+                                          content: const Text(
+                                              'Etes vous sur de vouloir supprimer votre compte ?'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(
+                                                  context, 'Annuler'),
+                                              child: const Text('Annuler'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () => {
+                                                // userRepository.deleteUser(),
+                                                Navigator.pop(
+                                                    context, 'Supprimer')
+                                              },
+                                              child: const Text('Supprimer'),
+                                            ),
+                                          ],
+                                        ))),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFB85151),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 40),
+                                ),
+                                child: Text(
+                                  'Supprimer mon compte',
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                              ),
+                            )
+                          ],
+                        )
+                      : Container()
                 ],
               ),
             )));

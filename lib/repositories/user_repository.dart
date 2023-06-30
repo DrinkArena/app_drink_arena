@@ -30,9 +30,15 @@ class UserRepository {
     }
   }
 
+  Future<String> getToken() async {
+    // get user in the local storage
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+    return token!;
+  }
+
   Future<void> login(String username, String password) async {
     String baseUrl = dotenv.env['BASE_URL'].toString();
-    // get user in the database
     Uri url = Uri.parse('$baseUrl/login_check');
     var response = await http.post(url,
         headers: <String, String>{

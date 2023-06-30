@@ -3,11 +3,15 @@ import 'dart:ffi';
 
 import 'package:app_drink_arena/models/game.dart';
 import 'package:app_drink_arena/models/player.dart';
+import 'package:app_drink_arena/models/user.dart';
+import 'package:app_drink_arena/repositories/user_repository.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GameRepository {
+  final UserRepository _userRepository = UserRepository();
+
   Future createRoom(String name) async {
     String baseUrl = dotenv.env['BASE_URL'].toString();
     var url = Uri.parse('$baseUrl/room');
@@ -15,6 +19,7 @@ class GameRepository {
       url,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${await _userRepository.getToken()}'
       },
       body: jsonEncode(name),
     );
@@ -33,6 +38,7 @@ class GameRepository {
     var response = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${await _userRepository.getToken()}'
         },
         body: jsonEncode(idRoom));
     print('Response status: ${response.statusCode}');
@@ -51,7 +57,13 @@ class GameRepository {
     String? roomId = prefs.getString('room');
 
     var url = Uri.parse('$baseUrl/room/$roomId/leave');
-    var response = await http.post(url);
+    var response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${await _userRepository.getToken()}'
+      },
+    );
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     if (response.statusCode == 200) {
@@ -67,7 +79,13 @@ class GameRepository {
     String? roomId = prefs.getString('room');
 
     var url = Uri.parse('$baseUrl/room/$roomId');
-    var response = await http.get(url);
+    var response = await http.get(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${await _userRepository.getToken()}'
+      },
+    );
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
 
@@ -95,12 +113,17 @@ class GameRepository {
 
   Future<String> startGame() async {
     String baseUrl = dotenv.env['BASE_URL'].toString();
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? roomId = prefs.getString('room');
 
     var url = Uri.parse('$baseUrl/room/$roomId/pledge/next');
-    var response = await http.get(url);
+    var response = await http.get(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${await _userRepository.getToken()}'
+      },
+    );
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
 
