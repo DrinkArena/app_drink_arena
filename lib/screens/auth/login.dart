@@ -140,12 +140,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                       })
                                   .catchError((error) => {
                                         ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                          content: Text(error.toString(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .displaySmall),
-                                        ))
+                                            .showSnackBar(
+                                                userRepository.errorOnLogin(
+                                                    error.response.statusCode,
+                                                    context))
                                       });
                             }
                           },
@@ -226,7 +224,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/menu');
+                          // Navigator.pushNamed(context, '/menu');
+                          print(
+                              "feature : \"Connecter en tant qu'invité\" not implemented yet");
                         },
                         child: Text(
                           'Connecter en tant qu\'invité',

@@ -70,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 35),
                             // get username in the local storage
-                            child: FutureBuilder<String>(
+                            child: FutureBuilder(
                               future: userRepository.getUser(),
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
@@ -82,8 +82,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     style:
                                         Theme.of(context).textTheme.bodyLarge,
                                   );
+                                } else {
+                                  return Text(
+                                    'Chargement...',
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge,
+                                  );
                                 }
-                                return const CircularProgressIndicator();
                               },
                             ),
                           ),

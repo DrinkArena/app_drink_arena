@@ -1,14 +1,25 @@
 import 'dart:convert';
 import 'dart:ffi';
 
+import 'package:app_drink_arena/helpers/handle_error.dart';
 import 'package:app_drink_arena/models/game.dart';
 import 'package:app_drink_arena/models/player.dart';
 import 'package:app_drink_arena/models/user.dart';
 import 'package:app_drink_arena/repositories/user_repository.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+/**
+ * Repository for the game
+ * 
+ * @see Game
+ * @see UserRepository
+ * @see Player
+ * @see User
+ * @see HandleError
+ */
 class GameRepository {
   final UserRepository _userRepository = UserRepository();
 
@@ -25,11 +36,25 @@ class GameRepository {
     );
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       Game game = Game.fromJson(jsonDecode(response.body));
+      print('-------------------------');
+      print(game);
       prefs.setInt('room', game.id!);
-      prefs.setString('Owner', game.owner!.username!);
+    }
+  }
+
+  Future<bool> isOwner() async {
+    UserRepository userRepository = UserRepository();
+    userRepository.saveIdUser();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? ownerId = prefs.getInt('ownerId');
+    int? userId = prefs.getInt('userId');
+    if (ownerId == userId) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -62,7 +87,7 @@ class GameRepository {
       return;
     }
     var url = Uri.parse('$baseUrl/room/$roomId/leave');
-    var response = await http.post(
+    var response = await http.get(
       url,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -73,7 +98,7 @@ class GameRepository {
     print('Response body: ${response.body}');
     if (response.statusCode == 200) {
       prefs.remove('room');
-      prefs.remove('OwnerId');
+      prefs.remove('ownerId');
     }
   }
 
@@ -81,7 +106,7 @@ class GameRepository {
     String baseUrl = dotenv.env['BASE_URL'].toString();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? roomId = prefs.getString('room');
+    int? roomId = prefs.getInt('room');
 
     var url = Uri.parse('$baseUrl/room/$roomId');
     var response = await http.get(
@@ -96,7 +121,7 @@ class GameRepository {
 
     if (response.statusCode == 200) {
       List<dynamic> players = jsonDecode(response.body)['participants'];
-      List<dynamic> playerOwner = jsonDecode(response.body)['owner'];
+      dynamic playerOwner = jsonDecode(response.body)['owner'];
 
       List<Player> playersList = [];
       players.forEach((element) {
@@ -104,15 +129,16 @@ class GameRepository {
       });
 
       playersList.forEach((element) {
-        if (element.id == playerOwner[0]['id']) {
+        if (element.id == playerOwner['id']) {
           element.isOwner = true;
         }
       });
-      prefs.setString('OwnerId', playerOwner[0]['id']);
+
+      prefs.setInt('ownerId', playerOwner['id']);
 
       return playersList;
     } else {
-      throw Exception('No room found');
+      throw Exception(response.statusCode);
     }
   }
 
@@ -136,13 +162,22 @@ class GameRepository {
       String pledge = jsonDecode(response.body)['pledge'];
       return pledge;
     } else {
-      throw Exception('La partie n\'a pas pu commencer');
+      throw Exception(response.statusCode);
     }
   }
 
-  // Future<void> leaveGame() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   prefs.remove('room');
-  //   prefs.remove('OwnerId');
-  // }
+  Future<int> getRoomId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? roomId = prefs.getInt('room');
+    if (roomId != null) {
+      return roomId;
+    } else {
+      throw Exception('Room ID is null');
+    }
+  }
+
+  Widget errorOnRoom(int statusCode, BuildContext context) {
+    final HandleError handleError = HandleError();
+    return handleError.errorOnRoom(statusCode, context);
+  }
 }

@@ -18,8 +18,8 @@ ThemeData theme() {
           fontSize: 20, fontFamily: 'Kavoon', color: Color(0xFFFFFFFF)),
       bodyLarge: TextStyle(
           fontSize: 24, fontFamily: 'Kavoon', color: Color(0xFFFFFFFF)),
-      displaySmall: TextStyle(
-          fontSize: 16, fontFamily: 'Kavoon', color: Color(0xFFFF0000)),
+      // displaySmall: TextStyle(
+      //     fontSize: 16, fontFamily: 'Kavoon', color: Color(0xFFFF0000)),
     ),
   );
 }

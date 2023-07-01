@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:app_drink_arena/helpers/handle_error.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -27,6 +29,26 @@ class UserRepository {
       return username;
     } else {
       return 'Invité';
+    }
+  }
+
+  Future<void> saveIdUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('userId')) {
+      String baseUrl = dotenv.env['BASE_URL'].toString();
+      Uri url = Uri.parse('$baseUrl/user/me');
+      dynamic response = await http.get(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${await getToken()}'
+        },
+      );
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      int id = jsonDecode(response.body)['id'];
+      prefs.setInt('userId', id);
     }
   }
 
@@ -107,5 +129,15 @@ class UserRepository {
     } else {
       throw Exception('Mauvais code de récupération');
     }
+  }
+
+  SnackBar errorOnLogin(int statusCode, BuildContext context) {
+    HandleError handleError = HandleError();
+    return handleError.errorOnLogin(statusCode, context);
+  }
+
+  Widget errorOnProfile(int statusCode, BuildContext context) {
+    HandleError handleError = HandleError();
+    return handleError.errorOnProfile(statusCode, context);
   }
 }
