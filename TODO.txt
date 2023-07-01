@@ -1,5 +1,4 @@
 TODO : 
-    - data binding
-    - requestRecoverPassword get ??? should be post 
     - add Icon and splashcreen
     - mettre la pref qui expire ou alors a chaque session voir si il est connecter !
+    - utiliser streamBuilder pour le jeu !

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_drink_arena/helpers/handle_verification_form.dart';
 import 'package:app_drink_arena/models/player.dart';
 import 'package:app_drink_arena/repositories/game_repository.dart';
@@ -17,6 +19,17 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
   final GameRepository _gameRepository = GameRepository();
 
   bool toggleColor = false;
+  late StreamController<List<Player>> streamController =
+      StreamController<List<Player>>(onListen: () async {
+    while (true) {
+      await Future.delayed(const Duration(seconds: 5));
+      toggleColor = false;
+      streamController.add(await _gameRepository.getRoom());
+    }
+  }, onCancel: () async {
+    await Future.delayed(const Duration(seconds: 5));
+    await streamController.close();
+  });
 
   final HandleVerificationForm handleVerificationForm =
       HandleVerificationForm();
@@ -27,10 +40,10 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
         body: Container(
             decoration: background(),
             child: Center(
-                child: FutureBuilder(
-                    future: _gameRepository.getRoom(),
+                child: StreamBuilder(
+                    stream: streamController.stream,
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.connectionState == ConnectionState.active) {
                         List<Player> players = snapshot.data as List<Player>;
                         return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -69,67 +82,48 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                                   .size
                                                   .height *
                                               0.6,
-                                          child: FutureBuilder(
-                                              future: _gameRepository.isOwner(),
-                                              builder: (context, snapshot) {
-                                                if (snapshot.hasData) {
-                                                  return ListView.builder(
-                                                      itemCount: players.length,
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        toggleColor =
-                                                            !toggleColor;
-                                                        return Container(
-                                                            color: toggleColor
-                                                                ? const Color(
-                                                                    0xFF6B5E5E)
-                                                                : Colors
-                                                                    .transparent,
-                                                            child: Row(
-                                                              children: [
-                                                                snapshot.data!
-                                                                    ? const Icon(
-                                                                        Icons
-                                                                            .front_hand,
-                                                                        color: Colors
-                                                                            .white,
-                                                                        size:
-                                                                            56,
-                                                                      )
-                                                                    : const Icon(
-                                                                        Icons
-                                                                            .person_outlined,
-                                                                        color: Colors
-                                                                            .white,
-                                                                        size:
-                                                                            56,
-                                                                      ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      left: 20),
-                                                                  child: Text(
-                                                                    players[index]
-                                                                        .username!,
-                                                                    style: Theme.of(
-                                                                            context)
-                                                                        .textTheme
-                                                                        .bodyMedium,
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ));
-                                                      });
-                                                } else {
-                                                  return const Center(
-                                                      child: Text(
-                                                    'Chargement...',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 20,
-                                                    ),
-                                                  ));
-                                                }
+                                          child: ListView.builder(
+                                              itemCount: players.length,
+                                              itemBuilder: (context, index) {
+                                                toggleColor = !toggleColor;
+                                                return Container(
+                                                    color: toggleColor
+                                                        ? const Color(
+                                                            0xFF6B5E5E)
+                                                        : Colors.transparent,
+                                                    child: Row(
+                                                      children: [
+                                                        players[index].isOwner!
+                                                            ? const Icon(
+                                                                Icons
+                                                                    .front_hand,
+                                                                color: Colors
+                                                                    .white,
+                                                                size: 56,
+                                                              )
+                                                            : const Icon(
+                                                                Icons
+                                                                    .person_outlined,
+                                                                color: Colors
+                                                                    .white,
+                                                                size: 56,
+                                                              ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 20),
+                                                          child: Text(
+                                                            players[index]
+                                                                .username!,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyMedium,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ));
                                               })),
                                       Row(
                                         mainAxisAlignment:
@@ -195,23 +189,47 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                                 )
                                               ],
                                             ),
-                                            child: TextButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const OnGameScreen(),
-                                                  ),
-                                                );
-                                              },
-                                              child: Text(
-                                                'Jouer',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyLarge,
-                                              ),
-                                            ),
+                                            child: FutureBuilder(
+                                                future:
+                                                    _gameRepository.isOwner(),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot.hasData) {
+                                                    return snapshot.data!
+                                                        ? TextButton(
+                                                            onPressed: () {
+                                                              _gameRepository
+                                                                  .startGame();
+                                                              Future.delayed(
+                                                                  const Duration(
+                                                                      milliseconds:
+                                                                          500),
+                                                                  () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
+                                                                Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            const OnGameScreen(),
+                                                                  ),
+                                                                );
+                                                              });
+                                                            },
+                                                            child: Text(
+                                                              'Jouer',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodyLarge,
+                                                            ),
+                                                          )
+                                                        : Container();
+                                                  } else {
+                                                    return Container();
+                                                  }
+                                                }),
                                           ),
                                         ],
                                       )
@@ -222,6 +240,7 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                         return _gameRepository.errorOnRoom(
                             snapshot.error as int, context);
                       } else {
+                        print(snapshot.connectionState);
                         return const Center(
                             child: Text(
                           'Chargement...',

@@ -39,8 +39,6 @@ class GameRepository {
     if (response.statusCode == 201) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       Game game = Game.fromJson(jsonDecode(response.body));
-      print('-------------------------');
-      print(game);
       prefs.setInt('room', game.id!);
     }
   }

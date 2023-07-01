@@ -49,12 +49,12 @@ class MyApp extends StatelessWidget {
         title: 'Drink Arena',
         theme: theme(),
         routes: {
-          '/login': (context) => LoginScreen(),
-          '/register': (context) => RegisterScreen(),
-          '/forgot-password': (context) => ForgotPasswordScreen(),
-          '/verification-code': (context) => VerificationCodeScreen(),
-          '/change_password': (context) => ChangePasswordScreen(),
-          '/profile': (context) => ProfileScreen(),
+          '/login': (context) => const LoginScreen(),
+          '/register': (context) => const RegisterScreen(),
+          '/forgot-password': (context) => const ForgotPasswordScreen(),
+          '/verification-code': (context) => const VerificationCodeScreen(),
+          '/change_password': (context) => const ChangePasswordScreen(),
+          '/profile': (context) => const ProfileScreen(),
           '/menu': (context) => NavBarWidget(),
           //  '/history': (context) => HistoryScreen(),
           // '/profile/change_password_by_profile': (context) =>
@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
                 return LoginScreen();
               }
             } else {
-              return Scaffold(
+              return const Scaffold(
                 body: Center(
                   child: CircularProgressIndicator(),
                 ),

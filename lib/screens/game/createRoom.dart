@@ -84,6 +84,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
                                     _gameRepository.createRoom(nameRoom.text);
+                                    nameRoom.clear();
                                     Future.delayed(const Duration(seconds: 1),
                                         () {
                                       Navigator.push(
