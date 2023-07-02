@@ -12,7 +12,7 @@ class MyPledgeScreen extends StatefulWidget {
 
 class _MyPledgeScreenState extends State<MyPledgeScreen> {
   PledgeRepository pledgeRepository = PledgeRepository();
-  TextEditingController _newPledge = TextEditingController();
+  final TextEditingController _newPledge = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -67,14 +67,14 @@ class _MyPledgeScreenState extends State<MyPledgeScreen> {
                                 onDismissed: (endToStart) {
                                   pledgeRepository
                                       .deletePledge(pledges[index].id!);
-                                  new Future.delayed(const Duration(seconds: 1),
+                                  Future.delayed(const Duration(seconds: 1),
                                       () {
                                     setState(() {});
                                   });
                                 },
                                 background: Container(
                                   color: Colors.red,
-                                  margin: EdgeInsets.only(bottom: 20),
+                                  margin: const EdgeInsets.only(bottom: 20),
                                 ),
                                 child: Container(
                                   margin: const EdgeInsets.only(bottom: 20),
@@ -97,7 +97,7 @@ class _MyPledgeScreenState extends State<MyPledgeScreen> {
                           ))
                     ]);
                   } else {
-                    return Text('Loading...');
+                    return const Text('Loading...');
                   }
                 },
                 future: pledgeRepository.getPledges(),

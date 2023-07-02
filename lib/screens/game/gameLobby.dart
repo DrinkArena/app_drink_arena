@@ -1,4 +1,3 @@
-import 'package:app_drink_arena/models/user.dart';
 import 'package:app_drink_arena/repositories/user_repository.dart';
 import 'package:app_drink_arena/screens/game/createRoom.dart';
 import 'package:app_drink_arena/screens/game/joinRoom.dart';

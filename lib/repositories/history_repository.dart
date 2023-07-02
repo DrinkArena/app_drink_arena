@@ -1,7 +1,5 @@
 import 'package:app_drink_arena/models/history.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class HistoryRepository {
   Future<List<History>> getHistory() async {

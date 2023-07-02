@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 class Pledge {
   int? id;

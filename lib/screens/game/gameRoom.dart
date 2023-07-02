@@ -27,8 +27,8 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
       streamController.add(await _gameRepository.getRoom());
     }
   }, onCancel: () async {
-    await Future.delayed(const Duration(seconds: 5));
     await streamController.close();
+    await Future.delayed(const Duration(seconds: 7));
   });
 
   final HandleVerificationForm handleVerificationForm =
@@ -127,7 +127,7 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                               })),
                                       Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
+                                            MainAxisAlignment.center,
                                         children: [
                                           Container(
                                             margin: const EdgeInsets.only(
@@ -171,65 +171,72 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                               ),
                                             ),
                                           ),
-                                          Container(
-                                            margin: const EdgeInsets.only(
-                                                bottom: 20),
-                                            width: 126,
-                                            height: 55,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                              color: const Color(0xFF72B851),
-                                              boxShadow: const [
-                                                BoxShadow(
-                                                  color: Color.fromRGBO(
-                                                      0, 0, 0, 0.25),
-                                                  offset: Offset(0, 4),
-                                                  blurRadius: 4,
-                                                )
-                                              ],
-                                            ),
-                                            child: FutureBuilder(
-                                                future:
-                                                    _gameRepository.isOwner(),
-                                                builder: (context, snapshot) {
-                                                  if (snapshot.hasData) {
-                                                    return snapshot.data!
-                                                        ? TextButton(
-                                                            onPressed: () {
-                                                              _gameRepository
-                                                                  .startGame();
-                                                              Future.delayed(
-                                                                  const Duration(
-                                                                      milliseconds:
-                                                                          500),
-                                                                  () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                                Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            const OnGameScreen(),
-                                                                  ),
-                                                                );
-                                                              });
-                                                            },
-                                                            child: Text(
-                                                              'Jouer',
-                                                              style: Theme.of(
+                                          FutureBuilder(
+                                            future: _gameRepository.isOwner(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData) {
+                                                return snapshot.data!
+                                                    ? Container(
+                                                        margin: const EdgeInsets
+                                                            .only(bottom: 20),
+                                                        width: 126,
+                                                        height: 55,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(30),
+                                                          color: const Color(
+                                                              0xFF72B851),
+                                                          boxShadow: const [
+                                                            BoxShadow(
+                                                              color: Color
+                                                                  .fromRGBO(
+                                                                      0,
+                                                                      0,
+                                                                      0,
+                                                                      0.25),
+                                                              offset:
+                                                                  Offset(0, 4),
+                                                              blurRadius: 4,
+                                                            )
+                                                          ],
+                                                        ),
+                                                        child: TextButton(
+                                                          onPressed: () {
+                                                            _gameRepository
+                                                                .startGame();
+                                                            Future.delayed(
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        500),
+                                                                () {
+                                                              Navigator.of(
                                                                       context)
-                                                                  .textTheme
-                                                                  .bodyLarge,
-                                                            ),
-                                                          )
-                                                        : Container();
-                                                  } else {
-                                                    return Container();
-                                                  }
-                                                }),
+                                                                  .pop();
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          const OnGameScreen(),
+                                                                ),
+                                                              );
+                                                            });
+                                                          },
+                                                          child: Text(
+                                                            'Jouer',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyLarge,
+                                                          ),
+                                                        ))
+                                                    : Container();
+                                              } else {
+                                                return Container();
+                                              }
+                                            },
                                           ),
                                         ],
                                       )

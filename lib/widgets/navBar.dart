@@ -12,9 +12,9 @@ class NavBarWidget extends StatelessWidget {
 
   List<Widget> _buildScreens() {
     return [
-      GameLobbyScreen(),
-      HistoryScreen(),
-      ProfileScreen(),
+      const GameLobbyScreen(),
+      const HistoryScreen(),
+      const ProfileScreen(),
     ];
   }
 

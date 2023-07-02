@@ -1,8 +1,6 @@
 import 'package:app_drink_arena/screens/auth/changePassword.dart';
 import 'package:app_drink_arena/screens/auth/forgotPassword.dart';
 import 'package:app_drink_arena/screens/auth/verificationCode.dart';
-import 'package:app_drink_arena/screens/profile/changePasswordByProfile.dart';
-import 'package:app_drink_arena/screens/profile/myPledge.dart';
 // import 'package:app_drink_arena/screens/history/history.dart';
 // import 'package:app_drink_arena/screens/profile/changePasswordByProfile.dart';
 // import 'package:app_drink_arena/screens/profile/myChallenge.dart';
@@ -19,12 +17,12 @@ import 'screens/auth/register.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initialization();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 Future initialization() async {
   await getEnv();
-  await Future.delayed(Duration(seconds: 3));
+  await Future.delayed(const Duration(seconds: 3));
 }
 
 Future getEnv() async {
@@ -72,7 +70,7 @@ class MyApp extends StatelessWidget {
               if (snapshot.data == true) {
                 return NavBarWidget();
               } else {
-                return LoginScreen();
+                return const LoginScreen();
               }
             } else {
               return const Scaffold(

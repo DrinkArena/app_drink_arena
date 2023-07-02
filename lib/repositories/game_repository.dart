@@ -1,25 +1,21 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:app_drink_arena/helpers/handle_error.dart';
 import 'package:app_drink_arena/models/game.dart';
 import 'package:app_drink_arena/models/player.dart';
-import 'package:app_drink_arena/models/user.dart';
 import 'package:app_drink_arena/repositories/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-/**
- * Repository for the game
- * 
- * @see Game
- * @see UserRepository
- * @see Player
- * @see User
- * @see HandleError
- */
+/// Repository for the game
+///
+/// @see Game
+/// @see UserRepository
+/// @see Player
+/// @see User
+/// @see HandleError
 class GameRepository {
   final UserRepository _userRepository = UserRepository();
 
@@ -34,26 +30,20 @@ class GameRepository {
       },
       body: jsonEncode({'name': name}),
     );
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    // print('Response status: ${response.statusCode}');
+    // print('Response body: ${response.body}');
     if (response.statusCode == 201) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       Game game = Game.fromJson(jsonDecode(response.body));
       prefs.setInt('room', game.id!);
+      prefs.setBool('isOwner', true);
     }
   }
 
   Future<bool> isOwner() async {
     UserRepository userRepository = UserRepository();
-    userRepository.saveIdUser();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? ownerId = prefs.getInt('ownerId');
-    int? userId = prefs.getInt('userId');
-    if (ownerId == userId) {
-      return true;
-    } else {
-      return false;
-    }
+    return prefs.getBool('isOwner') ?? false;
   }
 
   Future joinRoom(int roomId) async {
@@ -63,6 +53,7 @@ class GameRepository {
     var response = await http.get(
       url,
       headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ${await _userRepository.getToken()}'
       },
     );
@@ -74,7 +65,7 @@ class GameRepository {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       prefs.setInt('room', roomId);
-      print(prefs.getInt('room'));
+      prefs.setBool('isOwner', false);
     }
   }
 
@@ -126,15 +117,15 @@ class GameRepository {
       dynamic playerOwner = jsonDecode(response.body)['owner'];
 
       List<Player> playersList = [];
-      players.forEach((element) {
+      for (var element in players) {
         playersList.add(Player.fromJson(element));
-      });
+      }
 
-      playersList.forEach((element) {
+      for (var element in playersList) {
         if (element.id == playerOwner['id']) {
           element.isOwner = true;
         }
-      });
+      }
 
       prefs.setInt('ownerId', playerOwner['id']);
 

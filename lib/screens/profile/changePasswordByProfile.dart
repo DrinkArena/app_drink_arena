@@ -73,6 +73,7 @@ class _ChangePasswordByProfileScreenState
                           if (value == null || value.isEmpty) {
                             return 'Veuillez saisir votre mdp';
                           }
+                          return null;
                           // if (value != oldPasswordController.text)
                           //   return 'Mot de passe incorrect';
                         },

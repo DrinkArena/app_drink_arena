@@ -3,7 +3,6 @@ import 'package:app_drink_arena/models/pledge.dart';
 import 'package:app_drink_arena/repositories/user_repository.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'dart:ffi';
 
 class PledgeRepository {
   final UserRepository _userRepository = UserRepository();
@@ -43,13 +42,13 @@ class PledgeRepository {
       List<dynamic> pledgesJson = jsonDecode(response.body);
       print(pledgesJson);
       if (pledgesJson.isEmpty) return pledges;
-      pledgesJson.forEach((pledge) {
+      for (var pledge in pledgesJson) {
         pledges.add(Pledge(
             id: pledge['id'],
             title: pledge['title'],
             type: pledge['type'],
             created_at: DateTime.parse(pledge['created_at'])));
-      });
+      }
       return pledges;
     } else {
       throw Exception('No pledges found');

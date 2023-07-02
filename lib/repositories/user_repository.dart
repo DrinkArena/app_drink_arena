@@ -37,7 +37,7 @@ class UserRepository {
     if (!prefs.containsKey('userId')) {
       String baseUrl = dotenv.env['BASE_URL'].toString();
       Uri url = Uri.parse('$baseUrl/user/me');
-      dynamic response = await http.get(
+      var response = await http.get(
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -48,6 +48,7 @@ class UserRepository {
       print('Response body: ${response.body}');
 
       int id = jsonDecode(response.body)['id'];
+      print('id : $id');
       prefs.setInt('userId', id);
     }
   }
@@ -71,7 +72,7 @@ class UserRepository {
     if (response.statusCode == 200) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       dynamic token = jsonDecode(response.body)['token'];
-      print('Response body: ${token}');
+      print('Response body: $token');
 
       prefs.setString('token', token);
       prefs.setString('username', username);

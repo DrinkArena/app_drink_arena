@@ -70,7 +70,7 @@ class HandleError {
         Navigator.pop(context);
       },
       icon: const Icon(Icons.arrow_back),
-      padding: EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
       splashRadius: 20.0,
     );
   }
