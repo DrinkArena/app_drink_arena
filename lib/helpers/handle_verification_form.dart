@@ -54,4 +54,16 @@ class HandleVerificationForm {
     }
     return "Le nom doit contenir au moins 3 caractères";
   }
+
+  String? isNumberValid(TextEditingController numberController) {
+    if (int.tryParse(numberController.text) != null) {
+      // if contains special characters
+      if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%a-zA-Z-]')
+          .hasMatch(numberController.text)) {
+        return "Le numéro ne doit pas contenir de caractères spéciaux";
+      }
+      return null;
+    }
+    return "Le numéro doit être composé de chiffres";
+  }
 }

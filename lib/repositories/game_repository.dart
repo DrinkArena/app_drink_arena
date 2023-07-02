@@ -56,21 +56,25 @@ class GameRepository {
     }
   }
 
-  Future joinRoom(int idRoom) async {
+  Future joinRoom(int roomId) async {
     String baseUrl = dotenv.env['BASE_URL'].toString();
-    var url = Uri.parse('$baseUrl/room/$idRoom/join');
-    var response = await http.post(url,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer ${await _userRepository.getToken()}'
-        },
-        body: jsonEncode({'id': idRoom}));
+
+    var url = Uri.parse('$baseUrl/room/$roomId/join');
+    var response = await http.get(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer ${await _userRepository.getToken()}'
+      },
+    );
+    print('--------------------------');
+    print(url);
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     if (response.statusCode == 200) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      Game game = Game.fromJson(jsonDecode(response.body));
-      prefs.setInt('room', game.id!);
+
+      prefs.setInt('room', roomId);
+      print(prefs.getInt('room'));
     }
   }
 
