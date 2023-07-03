@@ -16,16 +16,7 @@ class _OnGameScreenState extends State<OnGameScreen> {
   final HandleVerificationForm handleVerificationForm =
       HandleVerificationForm();
 
-  GameRepository gameRepository = GameRepository();
-
-  List<Player> dataTest = [
-    Player(id: 1, username: 'test1', isOwner: true),
-    Player(id: 2, username: 'test2', isOwner: false),
-    Player(id: 3, username: 'test3', isOwner: false),
-    Player(id: 4, username: 'test4', isOwner: false),
-    Player(id: 5, username: 'test5', isOwner: false),
-    Player(id: 6, username: 'test6', isOwner: false),
-  ];
+  final GameRepository _gameRepository = GameRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -46,23 +37,32 @@ class _OnGameScreenState extends State<OnGameScreen> {
                             color: const Color(0xFF70A2C7),
                             borderRadius: BorderRadius.circular(50),
                           ),
-                          child: PopupMenuButton<Player>(
-                            color: const Color(0xFF70A2C7),
-                            icon: const Icon(
-                              Icons.group,
-                              color: Colors.white,
-                            ),
-                            itemBuilder: (context) => [
-                              ...dataTest.map((e) => PopupMenuItem(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    value: e,
-                                    child: Text(e.username!,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall),
-                                  ))
-                            ],
+                          child: FutureBuilder<List<Player>>(
+                            future: _gameRepository.getRoom(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return PopupMenuButton<Player>(
+                                  color: const Color(0xFF70A2C7),
+                                  icon: const Icon(
+                                    Icons.group,
+                                    color: Colors.white,
+                                  ),
+                                  itemBuilder: (context) => [
+                                    ...snapshot.data!.map((e) => PopupMenuItem(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20),
+                                          value: e,
+                                          child: Text(e.username!,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall),
+                                        ))
+                                  ],
+                                );
+                              } else {
+                                return const CircularProgressIndicator();
+                              }
+                            },
                           ),
                         ),
                         Container(
@@ -82,7 +82,7 @@ class _OnGameScreenState extends State<OnGameScreen> {
                           ),
                           child: TextButton(
                             onPressed: () {
-                              // GameRepository().leaveGame();
+                              _gameRepository.leaveGame();
                               Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                       builder: (context) =>
@@ -108,17 +108,29 @@ class _OnGameScreenState extends State<OnGameScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              color: const Color(0xFF6B5E5E),
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              height: MediaQuery.of(context).size.height * 0.5,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: Center(
-                                  child: Text(
-                                'Si tu as déja manger un tacos à 3 heure du matin après une fête alors bois 2 gorgé.',
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              )),
+                            FutureBuilder(
+                              future: _gameRepository.startGame(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Container(
+                                    color: const Color(0xFF6B5E5E),
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.8,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.5,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: Center(
+                                        child: Text(
+                                      snapshot.data.toString(),
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge,
+                                    )),
+                                  );
+                                } else {
+                                  return const CircularProgressIndicator();
+                                }
+                              },
                             ),
                             Container(
                               margin: const EdgeInsets.only(bottom: 20),

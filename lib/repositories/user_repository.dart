@@ -60,6 +60,17 @@ class UserRepository {
     return token!;
   }
 
+  Future<bool> isTokenExpired() {
+    // get user in the local storage
+    SharedPreferences prefs;
+    DateTime? expiresAt;
+    return SharedPreferences.getInstance().then((value) {
+      prefs = value;
+      expiresAt = DateTime.parse(prefs.getString('expiresAt')!);
+      return expiresAt!.isBefore(DateTime.now());
+    });
+  }
+
   Future<void> login(String username, String password) async {
     String baseUrl = dotenv.env['BASE_URL'].toString();
     Uri url = Uri.parse('$baseUrl/login_check');
@@ -74,7 +85,9 @@ class UserRepository {
       dynamic token = jsonDecode(response.body)['token'];
       print('Response body: $token');
 
+      DateTime expiresAt = DateTime.now().add(Duration(days: 7));
       prefs.setString('token', token);
+      prefs.setString('expiresAt', expiresAt.toString());
       prefs.setString('username', username);
     } else {
       throw Exception('Ce compte n\'existe pas');

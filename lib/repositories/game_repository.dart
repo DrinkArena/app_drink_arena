@@ -10,13 +10,6 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_client_sse/flutter_client_sse.dart';
 
-/// Repository for the game
-///
-/// @see Game
-/// @see UserRepository
-/// @see Player
-/// @see User
-/// @see HandleError
 class GameRepository {
   final UserRepository _userRepository = UserRepository();
 
@@ -42,7 +35,6 @@ class GameRepository {
   }
 
   Future<bool> isOwner() async {
-    UserRepository userRepository = UserRepository();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool('isOwner') ?? false;
   }
@@ -101,17 +93,23 @@ class GameRepository {
 
   Future<List<Player>> getRoom() async {
     String baseUrl = dotenv.env['BASE_URL'].toString();
+    String mercureUrl = dotenv.env['MERCURE_URL'].toString();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? roomId = prefs.getInt('room');
 
+    if (roomId == null) {
+      print('Room ID is null');
+      return [];
+    }
+
     var url = '$baseUrl/room/$roomId';
+    var sseUrl = '$mercureUrl/.well-known/mercure?topic=$url';
     SSEClient.subscribeToSSE(
-      url: url,
+      url: sseUrl,
       header: <String, String>{
         "Accept": "text/event-stream",
         "Cache-Control": "no-cache",
-        'Authorization': 'Bearer ${await _userRepository.getToken()}'
       },
     ).listen((event) {
       print('Id: ' + event.id!);
@@ -142,7 +140,7 @@ class GameRepository {
   Future<String> startGame() async {
     String baseUrl = dotenv.env['BASE_URL'].toString();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? roomId = prefs.getString('room');
+    int? roomId = prefs.getInt('room');
 
     var url = Uri.parse('$baseUrl/room/$roomId/pledge/next');
     var response = await http.get(
@@ -156,7 +154,7 @@ class GameRepository {
     print('Response body: ${response.body}');
 
     if (response.statusCode == 200) {
-      String pledge = jsonDecode(response.body)['pledge'];
+      String pledge = jsonDecode(response.body)['title'];
       return pledge;
     } else {
       throw Exception(response.statusCode);

@@ -15,6 +15,14 @@ class _GameLobbyScreenState extends State<GameLobbyScreen> {
   UserRepository userRepository = UserRepository();
 
   @override
+  initState() {
+    userRepository.isTokenExpired().then((value) => value
+        ? Navigator.of(context, rootNavigator: true).popAndPushNamed('/login')
+        : null);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(

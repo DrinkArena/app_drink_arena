@@ -54,12 +54,6 @@ class MyApp extends StatelessWidget {
           '/change_password': (context) => const ChangePasswordScreen(),
           '/profile': (context) => const ProfileScreen(),
           '/menu': (context) => NavBarWidget(),
-          //  '/history': (context) => HistoryScreen(),
-          // '/profile/change_password_by_profile': (context) =>
-          // ChangePasswordByProfileScreen(),
-          //'/about': (context) => AboutScreen(),
-          //'/contact': (context) => ContactScreen(),
-          // '/help': (context) => HelpScreen(),
         },
         home: FutureBuilder(
           future: checkAuth(),

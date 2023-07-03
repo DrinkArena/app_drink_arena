@@ -19,16 +19,18 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
   final GameRepository _gameRepository = GameRepository();
 
   bool toggleColor = false;
+  bool isLaunched = true;
   late StreamController<List<Player>> streamController =
       StreamController<List<Player>>(onListen: () async {
-    while (true) {
+    while (isLaunched) {
       await Future.delayed(const Duration(seconds: 5));
       toggleColor = false;
       streamController.add(await _gameRepository.getRoom());
     }
   }, onCancel: () async {
+    isLaunched = false;
+    await Future.delayed(const Duration(seconds: 4));
     await streamController.close();
-    await Future.delayed(const Duration(seconds: 7));
   });
 
   final HandleVerificationForm handleVerificationForm =
@@ -204,8 +206,6 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                                         ),
                                                         child: TextButton(
                                                           onPressed: () {
-                                                            _gameRepository
-                                                                .startGame();
                                                             Future.delayed(
                                                                 const Duration(
                                                                     milliseconds:
