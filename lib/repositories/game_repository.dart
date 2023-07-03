@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_client_sse/flutter_client_sse.dart';
 
 /// Repository for the game
 ///
@@ -92,6 +93,9 @@ class GameRepository {
     if (response.statusCode == 200) {
       prefs.remove('room');
       prefs.remove('ownerId');
+    } else if (response.statusCode == 404) {
+      prefs.remove('room');
+      prefs.remove('ownerId');
     }
   }
 
@@ -101,38 +105,38 @@ class GameRepository {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? roomId = prefs.getInt('room');
 
-    var url = Uri.parse('$baseUrl/room/$roomId');
-    var response = await http.get(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+    var url = '$baseUrl/room/$roomId';
+    SSEClient.subscribeToSSE(
+      url: url,
+      header: <String, String>{
+        "Accept": "text/event-stream",
+        "Cache-Control": "no-cache",
         'Authorization': 'Bearer ${await _userRepository.getToken()}'
       },
-    );
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    ).listen((event) {
+      print('Id: ' + event.id!);
+      print('Event: ' + event.event!);
+      print('Data: ' + event.data!);
+    });
 
-    if (response.statusCode == 200) {
-      List<dynamic> players = jsonDecode(response.body)['participants'];
-      dynamic playerOwner = jsonDecode(response.body)['owner'];
+    // List<dynamic> players = jsonDecode(event.data.participants!);
+    // dynamic playerOwner = jsonDecode(event.data.owner!);
 
-      List<Player> playersList = [];
-      for (var element in players) {
-        playersList.add(Player.fromJson(element));
-      }
+    // List<Player> playersList = [];
+    // for (var element in players) {
+    //   playersList.add(Player.fromJson(element));
+    // }
 
-      for (var element in playersList) {
-        if (element.id == playerOwner['id']) {
-          element.isOwner = true;
-        }
-      }
+    // for (var element in playersList) {
+    //   if (element.id == playerOwner['id']) {
+    //     element.isOwner = true;
+    //   }
+    // }
 
-      prefs.setInt('ownerId', playerOwner['id']);
+    // prefs.setInt('ownerId', playerOwner['id']);
 
-      return playersList;
-    } else {
-      throw Exception(response.statusCode);
-    }
+    // return playersList;
+    return [];
   }
 
   Future<String> startGame() async {

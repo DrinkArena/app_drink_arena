@@ -1,4 +1,5 @@
 TODO : 
-    - add Icon and splashcreen
+    - splashcreen
     - mettre la pref qui expire ou alors a chaque session voir si il est connecter !
-    - utiliser streamBuilder pour le jeu !
+    - Rajouter un delete des pledges en cliquant dessus
+    - gestion d'erreur 404 on leave
