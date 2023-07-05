@@ -201,6 +201,30 @@ class GameRepository {
     }
   }
 
+  Future<String> getPledge() async {
+    String baseUrl = dotenv.env['BASE_URL'].toString();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? roomId = prefs.getInt('room');
+
+    var url = Uri.parse('$baseUrl/room/$roomId');
+    var response = await http.get(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${await _userRepository.getToken()}'
+      },
+    );
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      String pledge = jsonDecode(response.body)['current_pledge']['title'];
+      return pledge;
+    } else {
+      throw Exception(response.statusCode);
+    }
+  }
+
   Future<int> getRoomId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? roomId = prefs.getInt('room');

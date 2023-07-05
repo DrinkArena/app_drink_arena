@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_drink_arena/helpers/handle_verification_form.dart';
 import 'package:app_drink_arena/models/player.dart';
 import 'package:app_drink_arena/repositories/game_repository.dart';
@@ -17,6 +19,36 @@ class _OnGameScreenState extends State<OnGameScreen> {
       HandleVerificationForm();
 
   final GameRepository _gameRepository = GameRepository();
+
+  bool isOwner = false;
+  bool isStarted = true;
+
+  late StreamController<String> streamController =
+      StreamController<String>(onListen: () async {
+    while (isStarted) {
+      await Future.delayed(const Duration(seconds: 5));
+      streamController.add(await _gameRepository.getPledge());
+      if (await _gameRepository.getState() == "FINISHED") {
+        isStarted = false;
+        await Future.delayed(const Duration(seconds: 4));
+        await streamController.close();
+        Navigator.of(context).pop();
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const GameLobbyScreen()),
+            (Route<dynamic> route) => false);
+      }
+    }
+    if (isStarted == false) {
+      await streamController.close();
+    }
+  }, onCancel: () async {
+    isStarted = false;
+    await Future.delayed(const Duration(seconds: 4));
+    _gameRepository.leaveGame();
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const GameLobbyScreen()),
+        (Route<dynamic> route) => false);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -82,12 +114,7 @@ class _OnGameScreenState extends State<OnGameScreen> {
                           ),
                           child: TextButton(
                             onPressed: () {
-                              _gameRepository.leaveGame();
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const GameLobbyScreen()),
-                                  (Route<dynamic> route) => false);
+                              isStarted = false;
                             },
                             child: Text(
                               'Quitter',
@@ -108,8 +135,8 @@ class _OnGameScreenState extends State<OnGameScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            FutureBuilder(
-                              future: _gameRepository.startGame(),
+                            StreamBuilder(
+                              stream: streamController.stream,
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   return Container(
@@ -148,7 +175,9 @@ class _OnGameScreenState extends State<OnGameScreen> {
                                 ],
                               ),
                               child: TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  _gameRepository.startGame();
+                                },
                                 child: Text(
                                   'Suivant',
                                   style: Theme.of(context).textTheme.bodyLarge,
