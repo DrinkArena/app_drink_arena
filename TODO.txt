@@ -1,0 +1,5 @@
+TODO : 
+    - splashcreen
+    - mettre la pref qui expire ou alors a chaque session voir si il est connecter !
+    - Rajouter un delete des pledges en cliquant dessus
+    - gestion d'erreur 404 on leave
