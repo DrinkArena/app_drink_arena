@@ -1,6 +1,5 @@
 TODO : 
-    - data binding
-    - requestRecoverPassword get ??? should be post 
-    - Historique use fake data and hundle exeption
-    - profile add button need a pop up
-    - add Icon and splashcreen
+    - splashcreen
+    - mettre la pref qui expire ou alors a chaque session voir si il est connecter !
+    - Rajouter un delete des pledges en cliquant dessus
+    - gestion d'erreur 404 on leave

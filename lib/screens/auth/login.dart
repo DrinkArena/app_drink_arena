@@ -13,7 +13,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController emailController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   late User user;
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: 261,
                         height: 80,
                         child: TextFormField(
-                          controller: emailController,
+                          controller: usernameController,
                           style: Theme.of(context).textTheme.bodyMedium,
                           decoration: InputDecoration(
                             filled: true,
@@ -70,17 +70,17 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(30),
                               borderSide: BorderSide.none,
                             ),
-                            hintText: 'Email',
+                            hintText: 'Pseudo',
                             hintStyle: Theme.of(context).textTheme.bodyMedium,
                             contentPadding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 16),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Veuillez saisir un email';
+                              return 'Veuillez saisir un pseudo';
                             }
                             return handleVerificationForm
-                                .isEmailValid(emailController);
+                                .isPseudoValid(usernameController);
                           },
                         ),
                       ),
@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 63,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
-                          color: Color.fromRGBO(114, 184, 81, 1),
+                          color: const Color.fromRGBO(114, 184, 81, 1),
                           boxShadow: const [
                             BoxShadow(
                               color: Color.fromRGBO(0, 0, 0, 0.25),
@@ -129,26 +129,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: TextButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              // userRepository
-                              //     .login(emailController.text,
-                              //         passwordController.text)
-                              //     .then((value) =>
-                              //          emailController.clear();
-                              //          passwordController.clear();
-                              // Navigator.pop(context);
-                              //         Navigator.pushNamed(context, '/home'))
-                              //     .catchError((error) => {
-                              //           ScaffoldMessenger.of(context)
-                              //               .showSnackBar(
-                              //             const SnackBar(
-                              //               content: Text(
-                              //                   'Email ou mot de passe incorrect'),
-                              //             ),
-                              //           )
-                              //         });
-
-                              Navigator.pop(context);
-                              Navigator.pushNamed(context, '/menu');
+                              userRepository
+                                  .login(usernameController.text,
+                                      passwordController.text)
+                                  .then((value) => {
+                                        usernameController.clear(),
+                                        passwordController.clear(),
+                                        Navigator.pop(context),
+                                        Navigator.pushNamed(context, '/menu')
+                                      })
+                                  .catchError((error) => {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                                userRepository.errorOnLogin(
+                                                    error.response.statusCode,
+                                                    context))
+                                      });
                             }
                           },
                           child: Text(
@@ -228,7 +224,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/menu');
+                          // Navigator.pushNamed(context, '/menu');
+                          print(
+                              "feature : \"Connecter en tant qu'invité\" not implemented yet");
                         },
                         child: Text(
                           'Connecter en tant qu\'invité',

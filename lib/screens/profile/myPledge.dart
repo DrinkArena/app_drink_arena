@@ -1,3 +1,5 @@
+import 'package:app_drink_arena/models/pledge.dart';
+import 'package:app_drink_arena/repositories/pledge_repository.dart';
 import 'package:app_drink_arena/theme/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -9,13 +11,9 @@ class MyPledgeScreen extends StatefulWidget {
 }
 
 class _MyPledgeScreenState extends State<MyPledgeScreen> {
-  List<String> dataTest = [
-    "'Test de goût les yeux bandés : Bandez les yeux de chaque participant et faites-leur goûter différents aliments ou boissons pour voir s'ils peuvent deviner ce que c'est.",
-    "Relais de crevaison de ballons : Divisez-vous en équipes et organisez une course de relais où chaque personne doit s'asseoir sur un ballon pour le faire éclater avant que le membre suivant de l'équipe puisse commencer.",
-    "Tour de guimauves : Fournissez à chaque équipe un sac de guimauves et des cure-dents. Challengez-les à construire la plus haute tour en utilisant uniquement ces matériaux dans un délai imparti.",
-    "Battle de danse : Organisez une compétition de danse où chaque personne montre tour à tour ses meilleurs mouvements de danse. Le groupe peut voter pour le gagnant.",
-    "Jeu de mémoire : Disposez plusieurs objets sur un plateau et donnez à tout le monde une minute pour les mémoriser. Ensuite, couvrez le plateau et demandez à chacun d'écrire autant d'objets qu'il se souvient. La personne avec le plus de bonnes réponses gagne."
-  ];
+  PledgeRepository pledgeRepository = PledgeRepository();
+  final TextEditingController _newPledge = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,46 +42,111 @@ class _MyPledgeScreenState extends State<MyPledgeScreen> {
                   ),
                 ],
               ),
-              Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(left: 20, top: 20),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      ('Nombre de gage : ${dataTest.length}/10'),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.6,
-                    margin: const EdgeInsets.symmetric(horizontal: 40),
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: dataTest.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF3F3636),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 35),
-                          margin: const EdgeInsets.only(bottom: 20),
+              FutureBuilder(
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    List<Pledge> pledges = snapshot.data as List<Pledge>;
+                    int pledgesLength = pledges.length;
+
+                    return Column(children: [
+                      Container(
+                          margin: const EdgeInsets.only(left: 20, top: 20),
+                          alignment: Alignment.bottomLeft,
                           child: Text(
-                            dataTest[index],
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
+                            'Nombre de gages : $pledgesLength/30',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          )),
+                      Container(
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          margin: const EdgeInsets.symmetric(horizontal: 40),
+                          child: ListView.builder(
+                            itemCount: pledgesLength,
+                            itemBuilder: (context, index) {
+                              return Dismissible(
+                                key: Key(pledges[index].title!),
+                                onDismissed: (endToStart) {
+                                  pledgeRepository
+                                      .deletePledge(pledges[index].id!);
+                                  Future.delayed(const Duration(seconds: 1),
+                                      () {
+                                    setState(() {});
+                                  });
+                                },
+                                background: Container(
+                                  color: Colors.red,
+                                  margin: const EdgeInsets.only(bottom: 20),
+                                ),
+                                child: Container(
+                                  margin: const EdgeInsets.only(bottom: 20),
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF3F3636),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: ListTile(
+                                    title: Text(
+                                      pledges[index].title!,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ))
+                    ]);
+                  } else {
+                    return const Text('Loading...');
+                  }
+                },
+                future: pledgeRepository.getPledges(),
               ),
               Container(
                 alignment: Alignment.bottomRight,
                 margin: const EdgeInsets.only(right: 20, bottom: 20),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: const Color(0xFF3F3636),
+                            title: Text('Ecrivez votre nouveau gage',
+                                style: Theme.of(context).textTheme.bodyMedium),
+                            content: TextFormField(
+                              keyboardType: TextInputType.multiline,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              maxLines: 5,
+                              maxLength: 150,
+                              controller: _newPledge,
+                            ),
+                            actions: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF72B851),
+                                ),
+                                onPressed: () {
+                                  if (_newPledge.text.isNotEmpty) {
+                                    PledgeRepository()
+                                        .createPledge(_newPledge.text);
+                                    Future.delayed(const Duration(seconds: 1),
+                                        () {
+                                      setState(() {
+                                        _newPledge.clear();
+                                      });
+                                    });
+                                  }
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Ajouter',
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium),
+                              ),
+                            ],
+                          );
+                        });
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF72B851),
                     shape: const CircleBorder(),
