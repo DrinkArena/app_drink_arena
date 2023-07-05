@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_client_sse/flutter_client_sse.dart';
 
 class GameRepository {
   final UserRepository _userRepository = UserRepository();
@@ -143,6 +142,36 @@ class GameRepository {
       prefs.setInt('ownerId', playerOwner['id']);
 
       return playersList;
+    } else {
+      throw Exception(response.statusCode);
+    }
+  }
+
+  Future<String> getState() async {
+    String baseUrl = dotenv.env['BASE_URL'].toString();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? roomId = prefs.getInt('room');
+
+    if (roomId == null) {
+      print('Room ID is null');
+      return '';
+    }
+
+    var url = Uri.parse('$baseUrl/room/$roomId');
+    var response = await http.get(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${await _userRepository.getToken()}'
+      },
+    );
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      String state = jsonDecode(response.body)['state'];
+      return state;
     } else {
       throw Exception(response.statusCode);
     }

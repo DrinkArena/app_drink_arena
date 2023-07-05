@@ -16,9 +16,9 @@ class _GameLobbyScreenState extends State<GameLobbyScreen> {
 
   @override
   initState() {
-    userRepository.isTokenExpired().then((value) => value
-        ? Navigator.of(context, rootNavigator: true).popAndPushNamed('/login')
-        : null);
+    // userRepository.isTokenExpired().then((value) => value
+    //     ? Navigator.of(context, rootNavigator: true).popAndPushNamed('/login')
+    //     : null);
     super.initState();
   }
 

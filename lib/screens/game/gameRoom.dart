@@ -20,12 +20,25 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
 
   bool toggleColor = false;
   bool isLaunched = true;
+
   late StreamController<List<Player>> streamController =
       StreamController<List<Player>>(onListen: () async {
     while (isLaunched) {
       await Future.delayed(const Duration(seconds: 5));
       toggleColor = false;
       streamController.add(await _gameRepository.getRoom());
+      if (await _gameRepository.getState() == "STARTED") {
+        isLaunched = false;
+        await Future.delayed(const Duration(seconds: 4));
+        await streamController.close();
+        Navigator.of(context).pop();
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const OnGameScreen(),
+          ),
+        );
+      }
     }
   }, onCancel: () async {
     isLaunched = false;
