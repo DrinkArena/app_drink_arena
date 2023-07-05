@@ -1,4 +1,3 @@
-
 class Pledge {
   int? id;
   String? title;

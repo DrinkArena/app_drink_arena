@@ -93,7 +93,6 @@ class GameRepository {
 
   Future<List<Player>> getRoom() async {
     String baseUrl = dotenv.env['BASE_URL'].toString();
-    String mercureUrl = dotenv.env['MERCURE_URL'].toString();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? roomId = prefs.getInt('room');
@@ -103,38 +102,50 @@ class GameRepository {
       return [];
     }
 
-    var url = '$baseUrl/room/$roomId';
-    var sseUrl = '$mercureUrl/.well-known/mercure?topic=$url';
-    SSEClient.subscribeToSSE(
-      url: sseUrl,
-      header: <String, String>{
-        "Accept": "text/event-stream",
-        "Cache-Control": "no-cache",
+    var url = Uri.parse('$baseUrl/room/$roomId');
+    // var sseUrl = '$mercureUrl/.well-known/mercure?topic=$url';
+    // SSEClient.subscribeToSSE(
+    //   url: sseUrl,
+    //   header: <String, String>{
+    //     "Accept": "text/event-stream",
+    //     "Cache-Control": "no-cache",
+    //   },
+    // ).listen((event) {
+    //   print('Id: ' + event.id!);
+    //   print('Event: ' + event.event!);
+    //   print('Data: ' + event.data!);
+    // });
+    var response = await http.get(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${await _userRepository.getToken()}'
       },
-    ).listen((event) {
-      print('Id: ' + event.id!);
-      print('Event: ' + event.event!);
-      print('Data: ' + event.data!);
-    });
+    );
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
 
-    // List<dynamic> players = jsonDecode(event.data.participants!);
-    // dynamic playerOwner = jsonDecode(event.data.owner!);
+    if (response.statusCode == 200) {
+      List<dynamic> players = jsonDecode(response.body)['participants'];
+      dynamic playerOwner = jsonDecode(response.body)['owner'];
 
-    // List<Player> playersList = [];
-    // for (var element in players) {
-    //   playersList.add(Player.fromJson(element));
-    // }
+      List<Player> playersList = [];
+      for (var element in players) {
+        playersList.add(Player.fromJson(element));
+      }
 
-    // for (var element in playersList) {
-    //   if (element.id == playerOwner['id']) {
-    //     element.isOwner = true;
-    //   }
-    // }
+      for (var element in playersList) {
+        if (element.id == playerOwner['id']) {
+          element.isOwner = true;
+        }
+      }
 
-    // prefs.setInt('ownerId', playerOwner['id']);
+      prefs.setInt('ownerId', playerOwner['id']);
 
-    // return playersList;
-    return [];
+      return playersList;
+    } else {
+      throw Exception(response.statusCode);
+    }
   }
 
   Future<String> startGame() async {
