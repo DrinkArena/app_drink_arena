@@ -62,86 +62,49 @@ class HistoryList extends StatelessWidget {
   final HistoryRepository historyRepository = HistoryRepository();
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<dynamic>>(
+    return FutureBuilder<List<History>>(
       future: historyRepository.getHistory(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
-        } else if (snapshot.hasError) {
+        } else if (snapshot.hasData) {
+          final List<History> histories = snapshot.data!;
+          return ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: histories.length,
+            itemBuilder: (context, index) {
+              final History history = histories[index];
+              return Column(
+                children: [
+                  ListTile(
+                    title: Text(
+                      history.name,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    trailing: Text(
+                      '${history.created_at.day}/${history.created_at.month}/${history.created_at.year}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                  const Divider(
+                    color: Colors.white,
+                    thickness: 1,
+                    indent: 20,
+                    endIndent: 20,
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
           return Center(
             child: Text(
               'Aucune donnée',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           );
-        } else {
-          final List<dynamic> objects = snapshot.data!;
-          final List<History> histories =
-              objects.map((object) => History.fromJson(object)).toList();
-          // Now you have a list of MyObject instances to work with
-
-          return ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: histories.length,
-            itemBuilder: (context, index) {
-              final History history = histories[index];
-              (index != 0)
-                  ? Center(
-                      child: Text(
-                        'Aucune donnée',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    )
-                  : Row(
-                      children: [
-                        Text(history.date.toString()),
-                        Text(history.amount.toString()),
-                      ],
-                    );
-              return Center(
-                child: Text(
-                  'Aucune donnée',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              );
-            },
-          );
         }
       },
     );
   }
 }
-
-/*** example for chaht gpt 
- * class MyWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<List<dynamic>>(
-      future: fetchData(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          final List<dynamic> objects = snapshot.data!;
-          final List<MyObject> myObjects = objects
-              .map((object) => MyObject.fromJson(object))
-              .toList();
-          // Now you have a list of MyObject instances to work with
-
-          return ListView.builder(
-            itemCount: myObjects.length,
-            itemBuilder: (context, index) {
-              final MyObject myObject = myObjects[index];
-              return ListTile(
-                title: Text(myObject.name),
-                subtitle: Text(myObject.description),
-              );
-            },
-          );
-        }
-      },
-    );
-  }
- */

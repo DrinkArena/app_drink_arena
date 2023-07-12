@@ -1,12 +1,13 @@
 import 'dart:convert';
+import 'package:app_drink_arena/helpers/handle_error.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '/models/user.dart';
 
 class UserRepository {
-  Future<void> saveUser(User user) async {
-    await dotenv.load(fileName: ".env");
+  Future<void> register(User user) async {
     String baseUrl = dotenv.env['BASE_URL'].toString();
     Uri url = Uri.parse('$baseUrl/user');
     dynamic response = await http.post(
@@ -20,33 +21,76 @@ class UserRepository {
     print('Response body: ${response.body}');
   }
 
-  Future<User> getUser() async {
+  Future<String> getUser() async {
     // get user in the local storage
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userString = prefs.getString('user');
-    if (userString != null) {
-      Map<String, dynamic> userMap = jsonDecode(userString);
-      User user = User.fromJson(userMap);
-      return user;
+    String? username = prefs.getString('username');
+    if (username != null) {
+      return username;
     } else {
-      throw Exception('No user found');
+      return 'Invité';
     }
   }
 
-  Future<void> login(String email, String password) async {
-    await dotenv.load(fileName: ".env");
+  Future<void> saveIdUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('userId')) {
+      String baseUrl = dotenv.env['BASE_URL'].toString();
+      Uri url = Uri.parse('$baseUrl/user/me');
+      var response = await http.get(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${await getToken()}'
+        },
+      );
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      int id = jsonDecode(response.body)['id'];
+      print('id : $id');
+      prefs.setInt('userId', id);
+    }
+  }
+
+  Future<String> getToken() async {
+    // get user in the local storage
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+    return token!;
+  }
+
+  Future<bool> isTokenExpired() {
+    // get user in the local storage
+    SharedPreferences prefs;
+    DateTime? expiresAt;
+    return SharedPreferences.getInstance().then((value) {
+      prefs = value;
+      expiresAt = DateTime.parse(prefs.getString('expiresAt')!);
+      return expiresAt!.isBefore(DateTime.now());
+    });
+  }
+
+  Future<void> login(String username, String password) async {
     String baseUrl = dotenv.env['BASE_URL'].toString();
-    // get user in the database
-    Uri url = Uri.parse('$baseUrl/users/$email/$password');
-    dynamic response = await http.get(url);
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    Uri url = Uri.parse('$baseUrl/login_check');
+    var response = await http.post(url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'username': username, 'password': password}));
+
     if (response.statusCode == 200) {
-      // set user in the local storage
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('user', response.body);
+      dynamic token = jsonDecode(response.body)['token'];
+      print('Response body: $token');
+
+      DateTime expiresAt = DateTime.now().add(Duration(days: 7));
+      prefs.setString('token', token);
+      prefs.setString('expiresAt', expiresAt.toString());
+      prefs.setString('username', username);
     } else {
-      throw Exception('No user found');
+      throw Exception('Ce compte n\'existe pas');
     }
   }
 
@@ -56,13 +100,12 @@ class UserRepository {
   }
 
   Future<String> requestForgotPassword() async {
-    await dotenv.load(fileName: ".env");
     String baseUrl = dotenv.env['BASE_URL'].toString();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? email = prefs.getString('email');
 
-    Uri url = Uri.parse('$baseUrl/users/request-forgot-password');
+    Uri url = Uri.parse('$baseUrl/user/request-forgot-password');
     dynamic response = await http.post(
       url,
       headers: <String, String>{
@@ -77,13 +120,12 @@ class UserRepository {
   }
 
   Future<int> recoverPassword(String password, String recoverCode) async {
-    await dotenv.load(fileName: ".env");
     String baseUrl = dotenv.env['BASE_URL'].toString();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? email = prefs.getString('email');
 
-    var url = Uri.parse('$baseUrl/recover-password');
+    var url = Uri.parse('$baseUrl/user/recover-password');
     var response = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -99,7 +141,17 @@ class UserRepository {
       // return respose.body to int
       return int.parse(response.body);
     } else {
-      throw Exception('No user found');
+      throw Exception('Mauvais code de récupération');
     }
+  }
+
+  SnackBar errorOnLogin(int statusCode, BuildContext context) {
+    HandleError handleError = HandleError();
+    return handleError.errorOnLogin(statusCode, context);
+  }
+
+  Widget errorOnProfile(int statusCode, BuildContext context) {
+    HandleError handleError = HandleError();
+    return handleError.errorOnProfile(statusCode, context);
   }
 }

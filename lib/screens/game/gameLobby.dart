@@ -1,4 +1,3 @@
-import 'package:app_drink_arena/models/user.dart';
 import 'package:app_drink_arena/repositories/user_repository.dart';
 import 'package:app_drink_arena/screens/game/createRoom.dart';
 import 'package:app_drink_arena/screens/game/joinRoom.dart';
@@ -14,6 +13,14 @@ class GameLobbyScreen extends StatefulWidget {
 
 class _GameLobbyScreenState extends State<GameLobbyScreen> {
   UserRepository userRepository = UserRepository();
+
+  @override
+  initState() {
+    // userRepository.isTokenExpired().then((value) => value
+    //     ? Navigator.of(context, rootNavigator: true).popAndPushNamed('/login')
+    //     : null);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +118,7 @@ class _GameLobbyScreenState extends State<GameLobbyScreen> {
                   onPressed: () {
                     userRepository.logout();
                     Navigator.of(context, rootNavigator: true)
-                        .pushNamed('/login');
+                        .popAndPushNamed('/login');
                   },
                   child: Text(
                     'Se déconnecter',

@@ -38,6 +38,31 @@ dependencies:
   http: ^0.13.6
   flutter_dotenv: ^5.1.0
   persistent_bottom_nav_bar: ^5.0.2
+  flutter_client_sse: ^1.0.0
+  flutter_native_splash: ^2.3.1
+  flutter_launcher_icons: ^0.13.1
+
+flutter_native_splash:
+  color: "#FFA500"
+  image: "assets/images/logo.png"
+  android: true
+  ios: true
+
+  android_12:
+    color: "#FFA500"
+    image: "assets/images/logo.png"
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo.png"
+  adaptive_icon_background: "#ffffffff"
+  adaptive_icon_foreground: "assets/images/logo_foreground.png"
+
+client_sse:
+  git:
+    url: https://github.com/pratikbaid3/flutter_client_sse
+    path:
 
 dev_dependencies:
   flutter_test:
@@ -55,9 +80,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:

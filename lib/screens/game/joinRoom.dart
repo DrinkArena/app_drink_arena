@@ -1,4 +1,5 @@
 import 'package:app_drink_arena/helpers/handle_verification_form.dart';
+import 'package:app_drink_arena/repositories/game_repository.dart';
 import 'package:app_drink_arena/screens/game/gameRoom.dart';
 import 'package:app_drink_arena/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class JoinRoomScreen extends StatefulWidget {
 class _JoinRoomScreenState extends State<JoinRoomScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController nameRoom = TextEditingController();
+  final GameRepository _gameRepository = GameRepository();
 
   final HandleVerificationForm handleVerificationForm =
       HandleVerificationForm();
@@ -40,13 +42,14 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> {
                               height: 80,
                               child: TextFormField(
                                 controller: nameRoom,
+                                keyboardType: TextInputType.number,
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Veuillez entrer un id de salle';
                                   }
                                   return handleVerificationForm
-                                      .isNameValid(nameRoom);
+                                      .isNumberValid(nameRoom);
                                 },
                                 decoration: InputDecoration(
                                   filled: true,
@@ -79,13 +82,20 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> {
                               ),
                               child: TextButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const GameRoomScreen(),
-                                    ),
-                                  );
+                                  if (_formKey.currentState!.validate()) {
+                                    _gameRepository
+                                        .joinRoom(int.parse(nameRoom.text));
+                                    Future.delayed(const Duration(seconds: 1),
+                                        () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const GameRoomScreen(),
+                                        ),
+                                      );
+                                    });
+                                  }
                                 },
                                 child: Text(
                                   'Rejoindre',

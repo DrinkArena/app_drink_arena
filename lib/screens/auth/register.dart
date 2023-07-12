@@ -13,7 +13,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController pseudoController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController samepasswordController = TextEditingController();
@@ -64,7 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           width: 261,
                           height: 80,
                           child: TextFormField(
-                            controller: pseudoController,
+                            controller: usernameController,
                             style: Theme.of(context).textTheme.bodyMedium,
                             decoration: InputDecoration(
                               hintText: 'Pseudo',
@@ -83,7 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 return 'Veuillez saisir un pseudo';
                               }
                               return handleVerificationForm
-                                  .isPseudoValid(pseudoController);
+                                  .isPseudoValid(usernameController);
                             },
                           ),
                         ),
@@ -190,11 +190,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 user = User(
-                                  pseudo: pseudoController.text,
+                                  username: usernameController.text,
                                   email: emailController.text,
                                   password: passwordController.text,
                                 );
-                                userRepository.saveUser(user).then((value) {
+                                userRepository.register(user).then((value) {
                                   Navigator.pushNamed(context, '/login');
                                 });
                               }
